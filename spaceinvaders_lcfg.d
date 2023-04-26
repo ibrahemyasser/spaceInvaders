@@ -1,0 +1,11 @@
+.\spaceinvaders_lcfg.o: HAL\src\spaceInvaders_Lcfg.c
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/PORT/Inc/Port_Cfg.h
+.\spaceinvaders_lcfg.o: .\APP\../LIBRARIES/common/Std_Types.h
+.\spaceinvaders_lcfg.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\spaceinvaders_lcfg.o: .\APP\../LIBRARIES/common/Compiler.h
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/DIO/Inc/Dio.h
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\spaceinvaders_lcfg.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\spaceinvaders_lcfg.o: .\APP\../LIBRARIES/common/Mcu_Hw.h

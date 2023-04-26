@@ -1,0 +1,10 @@
+.\intctrl.o: MCAL\INTERRUPT\Src\IntCtrl.c
+.\intctrl.o: .\APP\../LIBRARIES/common/Std_Types.h
+.\intctrl.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\intctrl.o: .\APP\../LIBRARIES/common/Compiler.h
+.\intctrl.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl.h
+.\intctrl.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\intctrl.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\intctrl.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
+.\intctrl.o: .\APP\../LIBRARIES/CpuDriver/inc/cpu_driver.h
+.\intctrl.o: .\APP\../LIBRARIES/common/Bit_Math.h

@@ -1,0 +1,15 @@
+.\isrs.o: HAL\src\ISRs.c
+.\isrs.o: .\APP\../LIBRARIES/common/Std_Types.h
+.\isrs.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\isrs.o: .\APP\../LIBRARIES/common/Compiler.h
+.\isrs.o: .\APP\../LIBRARIES/CpuDriver/inc/cpu_driver.h
+.\isrs.o: HAL\src\../inc/spaceInvaders.h
+.\isrs.o: .\APP\../Nokia5110.h
+.\isrs.o: .\APP\../LIBRARIES/COMMON/Mcu_Hw.h
+.\isrs.o: HAL\src\../../MCAL/PORT/Inc/Port_Cfg.h
+.\isrs.o: .\APP\../MCAL/DIO/Inc/Dio.h
+.\isrs.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
+.\isrs.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
+.\isrs.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\isrs.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\isrs.o: HAL\src\../../LIBRARIES/Common/Bit_Math.h

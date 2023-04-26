@@ -1,0 +1,14 @@
+.\spaceinvaders.o: HAL\src\spaceInvaders.c
+.\spaceinvaders.o: .\APP\../Nokia5110.h
+.\spaceinvaders.o: .\APP\../LIBRARIES/common/Std_Types.h
+.\spaceinvaders.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\spaceinvaders.o: .\APP\../LIBRARIES/common/Compiler.h
+.\spaceinvaders.o: .\APP\../LIBRARIES/CpuDriver/inc/cpu_driver.h
+.\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
+.\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\spaceinvaders.o: HAL\src\../inc/spaceInvaders.h
+.\spaceinvaders.o: .\APP\../MCAL/PORT/Inc/Port_Cfg.h
+.\spaceinvaders.o: .\APP\../MCAL/DIO/Inc/Dio.h
+.\spaceinvaders.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
+.\spaceinvaders.o: .\APP\../LIBRARIES/common/Mcu_Hw.h

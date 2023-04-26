@@ -1,0 +1,12 @@
+.\port.o: MCAL\PORT\Src\Port.c
+.\port.o: .\APP\../LIBRARIES/common/Std_Types.h
+.\port.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\port.o: .\APP\../LIBRARIES/common/Compiler.h
+.\port.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
+.\port.o: .\APP\../MCAL/DIO/Inc/Dio.h
+.\port.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
+.\port.o: .\APP\../MCAL/PORT/Inc/Port_Cfg.h
+.\port.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
+.\port.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\port.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\port.o: .\APP\../LIBRARIES/common/Bit_Math.h
