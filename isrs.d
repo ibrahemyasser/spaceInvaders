@@ -13,3 +13,5 @@
 .\isrs.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
 .\isrs.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
 .\isrs.o: HAL\src\../../LIBRARIES/Common/Bit_Math.h
+.\isrs.o: HAL\src\../../MCAL/SYSTICK/Inc/Systick.h
+.\isrs.o: .\APP\../MCAL/SYSTICK/Inc/Systick_Types.h

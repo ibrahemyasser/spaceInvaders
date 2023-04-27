@@ -37,6 +37,19 @@ Port_ConfigType Move_Right_Button =
 		R4R
 		
 	};
+	Port_ConfigType Fire_Button =
+	{
+		GPIOE,
+		PORTE,
+		PE0,
+		DIGITAL_PIN,
+		HIGH,
+		INPUT,
+		PULL_UP,
+		R4R
+		
+	};
+	
 Port_ConfigType Move_Left_Button= 
 	{
 		GPIOF,
@@ -59,7 +72,8 @@ GPIO_EXTI_ConfigType Right_Button=
 		FALLING_LOW,
 		GPIO_PortF_IRQn
 	};
-	GPIO_EXTI_ConfigType Left_Button=
+	
+GPIO_EXTI_ConfigType Left_Button=
 	{
 		GPIOF,
 		PF4,
@@ -68,7 +82,15 @@ GPIO_EXTI_ConfigType Right_Button=
 		FALLING_LOW,
 		GPIO_PortF_IRQn
 	};
-
+GPIO_EXTI_ConfigType Fire_EXTI_Button=
+	{
+		GPIOE,
+		PE0,
+		LEVEL_SENSETIVE,
+		EDGE_CONTROLLED,
+		FALLING_LOW,
+		GPIO_PortE_IRQn
+	};
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/

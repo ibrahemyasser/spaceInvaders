@@ -19,6 +19,8 @@
 #include "../LIBRARIES/COMMON/Mcu_Hw.h"
 #include "../../MCAL/PORT/Inc/Port_Cfg.h"
 #include "../../LIBRARIES/Common/Bit_Math.h"
+#include "../inc/spaceInvaders.h"
+#include "../../MCAL/SYSTICK/Inc/Systick.h"
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
@@ -34,6 +36,8 @@
 
 extern Port_ConfigType Move_Right_Button;
 extern Port_ConfigType Move_Left_Button;
+extern Port_ConfigType Fire_Button;
+
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -45,15 +49,29 @@ extern Port_ConfigType Move_Left_Button;
 /**********************************************************************************************************************
  *  GLOBAL FUNCTIONS
  *********************************************************************************************************************/
-void GPIOPortF_Handler(void)
+void GPIOPortE_Handler(void)
 {
 	Nokia5110_ClearBuffer();
 	Nokia5110_DisplayBuffer();      // draw buffer
+	if (Fire_Button.GPIOx->GPIORIS & (1<<Fire_Button.ChannelId))
+	{
+		SET_BIT_PERIPH_BAND(Fire_Button.GPIOx->GPIOICR,Fire_Button.ChannelId);
+		playerBullet.active = TRUUE;
+	}
+}
+
+void GPIOPortF_Handler(void)
+{
+	//Nokia5110_ClearBuffer();
+	//Nokia5110_DisplayBuffer();      // draw buffer
 	
 	if(Move_Right_Button.GPIOx->GPIORIS & (1<<Move_Right_Button.ChannelId))  
 	{//s1 pressed
 		SET_BIT_PERIPH_BAND(Move_Right_Button.GPIOx->GPIOICR,Move_Right_Button.ChannelId);
-		move_right();
+		fire_PlayerBullet();
+		//playerBullet.active = TRUUE;
+		Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+		
 	}
 	else if (Move_Left_Button.GPIOx->GPIORIS & (1<<Move_Left_Button.ChannelId))
 	{//s3 pressed

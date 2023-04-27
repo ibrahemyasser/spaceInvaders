@@ -3,3 +3,8 @@
 .\main.o: APP\../Random.h
 .\main.o: APP\../TExaS.h
 .\main.o: APP\../HAL/inc/spaceInvaders.h
+.\main.o: .\LIBRARIES\Common\Std_Types.h
+.\main.o: .\APP\../LIBRARIES/common/Platform_Types.h
+.\main.o: .\APP\../LIBRARIES/common/Compiler.h
+.\main.o: APP\../MCAL/SYSTICK/Inc/Systick.h
+.\main.o: .\APP\../MCAL/SYSTICK/Inc/Systick_Types.h

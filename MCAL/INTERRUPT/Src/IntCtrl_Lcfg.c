@@ -35,9 +35,9 @@ IntCtr_Config Int_LeftButton =
 	GPIO_PortF_IRQn,0x04,2,0
 };
 
-IntCtr_Config Int_ButtonOff = 
+IntCtr_Config Int_FireButton = 
 {
-	GPIO_PortD_IRQn,0x04,3,0
+	GPIO_PortE_IRQn,0x04,3,0
 };
 
 /**********************************************************************************************************************

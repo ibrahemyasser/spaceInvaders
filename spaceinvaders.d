@@ -4,6 +4,8 @@
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Platform_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Compiler.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/CpuDriver/inc/cpu_driver.h
+.\spaceinvaders.o: HAL\src\../../MCAL/SYSTICK/Inc/Systick.h
+.\spaceinvaders.o: .\APP\../MCAL/SYSTICK/Inc/Systick_Types.h
 .\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
 .\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
 .\spaceinvaders.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
