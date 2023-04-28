@@ -22,7 +22,7 @@ int main(void){
     // Draw game state
     Nokia5110_ClearBuffer();
     draw_player(player);
-    draw_bullet(playerBullet);
+    draw_bullet();
     Nokia5110_DisplayBuffer();
     
     // Add other game logic here

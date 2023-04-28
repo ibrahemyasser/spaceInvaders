@@ -69,9 +69,11 @@ extern IntCtr_Config Int_RightButton;
 extern IntCtr_Config Int_LeftButton;
 extern IntCtr_Config Int_FireButton;
 
+uint8_t nextBullet = 0;
+uint8_t bulletsCounter = 1;
 Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 0 };
 
-Bullet playerBullet = { {0,0}, FALSSE };
+Bullet playerBullet[MAX_OF_BULLETS];
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -86,6 +88,7 @@ Bullet playerBullet = { {0,0}, FALSSE };
 
 void game_Init(void)
 {
+	uint8_t i;
 	Port_Init(&Move_Right_Button);
 	Port_Init(&Move_Left_Button);
 	Port_Init(&Fire_Button);
@@ -97,6 +100,13 @@ void game_Init(void)
 	IntCrtl_Init(&Int_RightButton);
 	IntCrtl_Init(&Int_LeftButton);
 	IntCrtl_Init(&Int_FireButton);
+	for (i = 0;i<MAX_OF_BULLETS;i++)
+	{
+		playerBullet[i].pos.x = 0;
+		playerBullet[i].pos.y = 0;
+		playerBullet[i].active = FALSSE;	
+		playerBullet[i].fired = FALSSE;		
+	}
 }
 
 // Draw the player on the screen
@@ -130,12 +140,18 @@ void move_right(void) {
   }
   
 }
-void draw_bullet(Bullet p) {
-  if (playerBullet.active)
+void draw_bullet() {
+	uint8_t bu;
+	for( bu = 0;bu<MAX_OF_BULLETS;bu++)
 	{
-		Nokia5110_PrintBMP(p.pos.x, p.pos.y, Bullet_Map, 1);
-		Nokia5110_DisplayBuffer();     
+		if (playerBullet[bu].active)
+		{
+			Nokia5110_PrintBMP(playerBullet[bu].pos.x, playerBullet[bu].pos.y, Bullet_Map, 1);
+			Nokia5110_DisplayBuffer();     
+		}
+		
 	}
+  
 	
 }
 
@@ -146,23 +162,38 @@ void clear_bullet(Player p) {
 
 void fire_PlayerBullet(void)
 {
-	if (!playerBullet.active) {
-    playerBullet.pos.x = player.pos.x + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
-    playerBullet.pos.y = player.pos.y - 7 ;
-    playerBullet.active = TRUUE;
-  }
+	uint8_t bu;
+	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
+	{
+		if ((!(playerBullet[bu].active))&&(!(playerBullet[bu].fired)))
+		{
+			playerBullet[bu].pos.x = player.pos.x + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
+			playerBullet[bu].pos.y = player.pos.y - 7 ;
+			playerBullet[bu].active = TRUUE; 
+			playerBullet[bu].fired = TRUUE;
+			break;
+		}
+		
+	}
 }
 
 
 void updatePlayerBullet(void) {
-  if (playerBullet.active) {
-    playerBullet.pos.y -= PLAYER_BULLET_SPEED;
-    if (playerBullet.pos.y < 0) {
-      playerBullet.active = FALSSE;
+  uint8_t bu;
+	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
+	{
+		if (playerBullet[bu].active) {
+    playerBullet[bu].pos.y -= PLAYER_BULLET_SPEED;
+    if (playerBullet[bu].pos.y < 0) {
+      playerBullet[bu].active = FALSSE;
+			playerBullet[bu].fired = FALSSE;
     }
-		Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+		
+	}
   }
+	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
+
 
 
 /******************************************************************************

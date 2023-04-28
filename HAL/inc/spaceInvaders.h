@@ -16,6 +16,7 @@
 #define PLAYER_BULLET_SPEED 5
 
 #define BULLET_DELAY				500
+#define MAX_OF_BULLETS			5
 
 typedef enum 
 {
@@ -33,6 +34,7 @@ typedef struct {
 typedef struct {
   Point pos;
   BOOL active;
+	BOOL fired;
 } Bullet;
 
 typedef struct {
@@ -43,7 +45,10 @@ typedef struct {
 
 
 extern Player player;
-extern Bullet playerBullet;
+extern Bullet playerBullet[MAX_OF_BULLETS];
+
+extern uint8_t nextBullet ;
+extern uint8_t bulletsCounter;
 
 extern const unsigned char PlayerShip0[] ;
 extern const unsigned char Bullet_Map[] ;
@@ -55,7 +60,7 @@ void move_right(void);
 void game_Init(void);
 void game_InterruptInit(void);
 void clear_bullet(Player p);
-void draw_bullet(Bullet p);
+void draw_bullet(void);
 void updatePlayerBullet(void);
 void fire_PlayerBullet(void);
 
