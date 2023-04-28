@@ -17,7 +17,7 @@ int main(void){
   // Game loop
   while (1) {
  
-		//updatePlayerBullet();
+    //updatePlayerBullet();
 
     // Draw game state
     Nokia5110_ClearBuffer();
