@@ -5,6 +5,8 @@
 #include "../MCAL/SYSTICK/Inc/Systick.h"
 
 
+
+
 int main(void){
   
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
@@ -12,8 +14,7 @@ int main(void){
   Nokia5110_ClearBuffer();
 	game_Init();
 	Systick_Init();
-  
-  
+	
   // Game loop
   while (1) {
  
@@ -23,6 +24,7 @@ int main(void){
     Nokia5110_ClearBuffer();
     draw_player(player);
     draw_bullet();
+		draw_enemies();
     Nokia5110_DisplayBuffer();
     
     // Add other game logic here

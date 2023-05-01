@@ -14,3 +14,4 @@
 .\spaceinvaders.o: .\APP\../MCAL/DIO/Inc/Dio.h
 .\spaceinvaders.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
+.\spaceinvaders.o: .\APP\../Random.h

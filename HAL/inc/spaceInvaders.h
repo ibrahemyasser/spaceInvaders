@@ -15,9 +15,14 @@
 #define PLAYER_SPEED 2
 #define PLAYER_BULLET_SPEED 5
 
-#define BULLET_DELAY				500
+#define BULLET_DELAY				100
 #define MAX_OF_BULLETS			5
 
+#define MAX_OF_ENEMIES			5
+#define ENEMY_SPEED					5
+
+#define ENEMY_WIDTH					0x10
+#define ENEMY_HEIGHT				0x0A
 typedef enum 
 {
 	FALSSE=0,
@@ -31,6 +36,10 @@ typedef struct {
   sint16_t y;
 } Point;
 
+typedef struct {
+  Point pos;
+  BOOL alive;
+} Enemy_t;
 typedef struct {
   Point pos;
   BOOL active;
@@ -63,7 +72,8 @@ void clear_bullet(Player p);
 void draw_bullet(void);
 void updatePlayerBullet(void);
 void fire_PlayerBullet(void);
-
+void generateEnemies(void);
+void draw_enemies(void);
 
 
 

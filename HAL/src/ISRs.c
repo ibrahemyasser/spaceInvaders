@@ -68,7 +68,7 @@ void GPIOPortF_Handler(void)
 	if(Move_Right_Button.GPIOx->GPIORIS & (1<<Move_Right_Button.ChannelId))  
 	{//s1 pressed
 		SET_BIT_PERIPH_BAND(Move_Right_Button.GPIOx->GPIOICR,Move_Right_Button.ChannelId);
-		bulletsCounter++;
+		
 		fire_PlayerBullet();
 		//playerBullet.active = TRUUE;
 		Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
