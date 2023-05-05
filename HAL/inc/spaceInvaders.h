@@ -74,7 +74,8 @@ void updatePlayerBullet(void);
 void fire_PlayerBullet(void);
 void generateEnemies(void);
 void draw_enemies(void);
-
+void GameOver(int MAX_SCORE);
+void MAIN_MENU(void);
 
 
 #endif
