@@ -79,10 +79,21 @@ extern IntCtr_Config Int_FireButton;
 
 uint8_t nextBullet = 0;
 uint8_t bulletsCounter = 1;
+unsigned long SW1,SW2;
+unsigned long FrameCount=0;
 Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 0 };
 
 Bullet playerBullet[MAX_OF_BULLETS];
 Enemy_t enemies[MAX_OF_ENEMIES];
+
+struct State {
+  unsigned long x;      // x coordinate
+  unsigned long y;      // y coordinate
+  const unsigned char *image[2]; // two pointers to images
+  long life;            // 0=dead, 1=alive
+};         
+typedef struct State STyp;
+STyp Enemy[4];
 
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
@@ -273,6 +284,150 @@ void MAIN_MENU(void){
   Nokia5110_OutString("2- EXIT");
   
 }
+
+
+
+void Init(void){ int i;
+  for(i=0;i<4;i++){
+    Enemy[i].x = 20*i;
+    Enemy[i].y = 10;
+    Enemy[i].image[0] = SmallEnemy30PointA;
+    Enemy[i].image[1] = SmallEnemy30PointB;
+    Enemy[i].life = 1;
+   }
+}
+void Move(void){ int i;
+  for(i=0;i<4;i++){
+    if(Enemy[i].x < 72){
+      Enemy[i].x += 1; // move to right
+    }else{
+      Enemy[i].life = 0;
+    }
+  }
+}
+
+
+
+void Draw(void){ int i;
+  Nokia5110_ClearBuffer();
+  for(i=0;i<4;i++){
+    if(Enemy[i].life > 0){
+     Nokia5110_PrintBMP(Enemy[i].x, Enemy[i].y, Enemy[i].image[FrameCount], 0);
+    }
+  }
+  Nokia5110_DisplayBuffer();      // draw buffer
+  FrameCount = (FrameCount+1)&0x01; // 0,1,0,1,...
+}
+
+
+
+void PortF_Init(void){
+  volatile unsigned long delay;
+	SYSCTL_RCGC2_R |= 0x00000020; 
+	delay = SYSCTL_RCGC2_R;
+	GPIO_PORTF_DIR_R = 0X0E ;         
+  GPIO_PORTF_LOCK_R = 0x4C4F434B;   
+  GPIO_PORTF_CR_R = 0x1F;           
+  GPIO_PORTF_AMSEL_R = 0x00;        
+  GPIO_PORTF_PCTL_R = 0x00000000;   
+           
+  GPIO_PORTF_AFSEL_R = 0x00;        
+  GPIO_PORTF_PUR_R = 0x11;          
+  GPIO_PORTF_DEN_R = 0x1F;         
+}
+
+	 
+void BYE(void){
+		int AnyLife = 1; int i;
+    TExaS_Init(NoLCD_NoScope);  // set system clock to 80 MHz
+ 
+  Nokia5110_Init();
+  
+  Init();
+  Timer2_Init(80000000/30);  // 30 Hz
+ while(AnyLife){
+	 
+    while(Semaphore == 0){};
+    Semaphore = 0; // runs at 30 Hz
+    AnyLife = 0;
+    for(i=0; i<4 ; i++){
+      AnyLife |= Enemy[i].life;
+    }
+		
+    Draw();
+		Nokia5110_SetCursor(0, 3);
+		Nokia5110_OutString("    BYE ");
+			
+		}
+
+}
+
+void main_menu_select(void){
+	
+	 PortF_Init();        // Call initialization of port PF4, PF3, PF2, PF1, PF0
+  
+	 while(1){
+    SW1 = GPIO_PORTF_DATA_R&0x10;     // read PF4 into SW1
+    SW2 = GPIO_PORTF_DATA_R&0x01;     // read PF0 into SW2
+		
+    if(SW2&&(!SW1)){                     // SW1 is pressed
+  
+			//go to play
+    } 
+		else if(SW1&&(!SW2)){              // SW2 is pressed
+			 
+			       BYE();
+			
+     }
+  }
+	
+}
+
+void Timer2_Init(unsigned long period){ 
+  unsigned long volatile delay;
+  SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
+  delay = SYSCTL_RCGCTIMER_R;
+  TimerCount = 0;
+  Semaphore = 0;
+  TIMER2_CTL_R = 0x00000000;    // 1) disable timer2A during setup
+  TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
+  TIMER2_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
+  TIMER2_TAILR_R = period-1;    // 4) reload value
+  TIMER2_TAPR_R = 0;            // 5) bus clock resolution
+  TIMER2_ICR_R = 0x00000001;    // 6) clear timer2A timeout flag
+  TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt
+  NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4
+// interrupts enabled in the main program after all devices initialized
+// vector number 39, interrupt number 23
+  NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
+  TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A
+}
+
+void Timer2A_Handler(void){ 
+  TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
+  TimerCount++;
+  Move(); 
+  Semaphore = 1; // trigger
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /******************************************************************************
 * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)        
