@@ -244,6 +244,36 @@ void draw_enemies(void)
 }
 
 
+
+
+//Game Over 
+
+void GameOver(int MAX_SCORE){
+	
+  Nokia5110_Clear();
+  Systick_StopTimer();
+  Nokia5110_SetCursor(1, 2);
+  Nokia5110_OutString("GAME OVER");
+	
+	
+}
+
+//main menu
+
+void MAIN_MENU(void){
+		
+  Nokia5110_Clear();
+  Nokia5110_SetCursor(0, 0);
+  Nokia5110_OutString("  MAIN MENU");
+  Nokia5110_SetCursor(0, 1);
+  Nokia5110_OutString("............");
+  Nokia5110_SetCursor(0, 3);
+  Nokia5110_OutString("1-GO TO PLAY");
+  Nokia5110_SetCursor(0, 5);
+  Nokia5110_OutString("2- EXIT");
+  
+}
+
 /******************************************************************************
 * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)        
 * \Description     : Describe this service                                    
