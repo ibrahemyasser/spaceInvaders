@@ -76,6 +76,14 @@ void generateEnemies(void);
 void draw_enemies(void);
 void GameOver(int MAX_SCORE);
 void MAIN_MENU(void);
+void PortF_Init(void);
+void BYE(void);
+void main_menu_select(void);
+void Draw(void);
+void Move(void);
+void Init(void);
+
+
 
 
 #endif
