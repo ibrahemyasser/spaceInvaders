@@ -11,8 +11,9 @@ int main(void){
   
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	Nokia5110_Init();
-  Nokia5110_ClearBuffer();
-	game_Init();
+  game_Init();
+	Nokia5110_ClearBuffer();
+	//main_menu_select();
 	Systick_Init();
 	
   // Game loop

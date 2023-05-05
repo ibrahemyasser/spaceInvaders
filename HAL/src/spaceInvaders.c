@@ -14,6 +14,7 @@
  *  INCLUDES
  *********************************************************************************************************************/
 #include "../Nokia5110.h"
+#include "../TExaS.h"
 #include "../LIBRARIES/common/Std_Types.h"
 #include "../LIBRARIES/CpuDriver/inc/cpu_driver.h"
 #include "../../MCAL/SYSTICK/Inc/Systick.h"
@@ -79,20 +80,16 @@ extern IntCtr_Config Int_FireButton;
 
 uint8_t nextBullet = 0;
 uint8_t bulletsCounter = 1;
-unsigned long SW1,SW2;
-unsigned long FrameCount=0;
+unsigned long FrameCount=0; 
+unsigned long TimerCount;
+unsigned long Semaphore; 
+unsigned long SW1,SW2;  // input from PF4,PF0
 Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 0 };
 
 Bullet playerBullet[MAX_OF_BULLETS];
 Enemy_t enemies[MAX_OF_ENEMIES];
 
-struct State {
-  unsigned long x;      // x coordinate
-  unsigned long y;      // y coordinate
-  const unsigned char *image[2]; // two pointers to images
-  long life;            // 0=dead, 1=alive
-};         
-typedef struct State STyp;
+
 STyp Enemy[4];
 
 /**********************************************************************************************************************
@@ -263,10 +260,12 @@ void GameOver(int MAX_SCORE){
 	
   Nokia5110_Clear();
   Systick_StopTimer();
-  Nokia5110_SetCursor(1, 2);
+  Nokia5110_SetCursor(2, 0);
   Nokia5110_OutString("GAME OVER");
-	
-	
+	Nokia5110_SetCursor(2, 2);
+	Nokia5110_OutString("Score:");
+	Nokia5110_SetCursor(1, 4);
+	Nokia5110_OutUDec(MAX_SCORE);
 }
 
 //main menu
@@ -287,12 +286,13 @@ void MAIN_MENU(void){
 
 
 
-void Init(void){ int i;
+void Init(void){ 
+	int i;
   for(i=0;i<4;i++){
     Enemy[i].x = 20*i;
     Enemy[i].y = 10;
-    Enemy[i].image[0] = SmallEnemy30PointA;
-    Enemy[i].image[1] = SmallEnemy30PointB;
+    Enemy[i].image[0] = SmallEnemy10PointA;
+    Enemy[i].image[1] = SmallEnemy10PointA;
     Enemy[i].life = 1;
    }
 }
@@ -318,71 +318,6 @@ void Draw(void){ int i;
   Nokia5110_DisplayBuffer();      // draw buffer
   FrameCount = (FrameCount+1)&0x01; // 0,1,0,1,...
 }
-
-
-
-void PortF_Init(void){
-  volatile unsigned long delay;
-	SYSCTL_RCGC2_R |= 0x00000020; 
-	delay = SYSCTL_RCGC2_R;
-	GPIO_PORTF_DIR_R = 0X0E ;         
-  GPIO_PORTF_LOCK_R = 0x4C4F434B;   
-  GPIO_PORTF_CR_R = 0x1F;           
-  GPIO_PORTF_AMSEL_R = 0x00;        
-  GPIO_PORTF_PCTL_R = 0x00000000;   
-           
-  GPIO_PORTF_AFSEL_R = 0x00;        
-  GPIO_PORTF_PUR_R = 0x11;          
-  GPIO_PORTF_DEN_R = 0x1F;         
-}
-
-	 
-void BYE(void){
-		int AnyLife = 1; int i;
-    TExaS_Init(NoLCD_NoScope);  // set system clock to 80 MHz
- 
-  Nokia5110_Init();
-  
-  Init();
-  Timer2_Init(80000000/30);  // 30 Hz
- while(AnyLife){
-	 
-    while(Semaphore == 0){};
-    Semaphore = 0; // runs at 30 Hz
-    AnyLife = 0;
-    for(i=0; i<4 ; i++){
-      AnyLife |= Enemy[i].life;
-    }
-		
-    Draw();
-		Nokia5110_SetCursor(0, 3);
-		Nokia5110_OutString("    BYE ");
-			
-		}
-
-}
-
-void main_menu_select(void){
-	
-	 PortF_Init();        // Call initialization of port PF4, PF3, PF2, PF1, PF0
-  
-	 while(1){
-    SW1 = GPIO_PORTF_DATA_R&0x10;     // read PF4 into SW1
-    SW2 = GPIO_PORTF_DATA_R&0x01;     // read PF0 into SW2
-		
-    if(SW2&&(!SW1)){                     // SW1 is pressed
-  
-			//go to play
-    } 
-		else if(SW1&&(!SW2)){              // SW2 is pressed
-			 
-			       BYE();
-			
-     }
-  }
-	
-}
-
 void Timer2_Init(unsigned long period){ 
   unsigned long volatile delay;
   SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
@@ -409,6 +344,47 @@ void Timer2A_Handler(void){
   Move(); 
   Semaphore = 1; // trigger
 }
+
+	 
+void BYE(void){
+	int AnyLife = 1; int i;  
+  Init();
+  Timer2_Init(80000000/30);  // 30 Hz
+ while(AnyLife){
+	 
+    while(Semaphore == 0){};
+    Semaphore = 0; // runs at 30 Hz
+    AnyLife = 0;
+    for(i=0; i<4 ; i++){
+      AnyLife |= Enemy[i].life;
+    }
+		
+    Draw();
+		Nokia5110_SetCursor(0, 3);
+		Nokia5110_OutString("    BYE ");
+			
+		}
+
+}
+
+
+void main_menu_select(void){
+  
+	 while(1){
+    SW1 = GPIOF->GPIODATA&0x10;     // read PF4 into SW1
+    SW2 = GPIOF->GPIODATA&0x01;     // read PF0 into SW2
+		
+    if(SW2&&(!SW1)){                     // SW1 is pressed
+  
+			//go to play
+    } 
+		else if(SW1&&(!SW2)){              // SW2 is pressed
+			  BYE();	
+     }
+  }
+}
+
+
 
 
 

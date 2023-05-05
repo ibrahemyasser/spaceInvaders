@@ -1,5 +1,6 @@
 .\spaceinvaders.o: HAL\src\spaceInvaders.c
 .\spaceinvaders.o: .\APP\../Nokia5110.h
+.\spaceinvaders.o: .\APP\../TExaS.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Std_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Platform_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Compiler.h
