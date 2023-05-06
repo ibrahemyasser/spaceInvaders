@@ -154,19 +154,83 @@ void draw_enemies(void)
 }
 
 
+// void generateEnemies(void) {
+//   uint8_t i ;
+// 	uint8_t numEnemies = Random() % (MAX_OF_ENEMIES + 1);
+//   for ( i = 0; i < numEnemies; i++) {
+    
+//     if (!enemies[i].alive) {
+//           enemies[i].pos.x = Random32() % (84 - ENEMY_WIDTH + 1);
+//           enemies[i].pos.y = 0;
+//           enemies[i].alive = TRUUE;
+//           break;
+//         }
+//   }
+// }
+
+
 void generateEnemies(void) {
   uint8_t i ;
-	uint8_t numEnemies = Random() % (MAX_OF_ENEMIES + 1);
+	uint8_t j ;
+	uint8_t numEnemies;
+	numEnemies = (Random() % MAX_OF_ENEMIES )+ 1;
   for ( i = 0; i < numEnemies; i++) {
-    
+		
     if (!enemies[i].alive) {
           enemies[i].pos.x = Random32() % (84 - ENEMY_WIDTH + 1);
           enemies[i].pos.y = 0;
           enemies[i].alive = TRUUE;
-          break;
+					if(i==0)
+					{
+						if(enemies[i].pos.x - enemies[MAX_OF_ENEMIES-1].pos.x <= 0 && enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x < ENEMY_WIDTH)
+							{
+								enemies[i].pos.x -= ENEMY_WIDTH - enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x ;
+								continue;
+							}
+							if(enemies[i].pos.x - enemies[MAX_OF_ENEMIES-1].pos.x > 0 && enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x > ENEMY_WIDTH)
+							{
+								enemies[i].pos.x += ENEMY_WIDTH - enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x ;
+							}
+					}
+					for(j=0;j<i;j++)
+					{	
+						if(i>1)
+						{
+							if(enemies[i].pos.x - enemies[j].pos.x <= 0 && enemies[j].pos.x-enemies[i].pos.x < ENEMY_WIDTH)
+							{
+								enemies[i].pos.x -= ENEMY_WIDTH - enemies[j].pos.x-enemies[i].pos.x ;
+								continue;
+							}
+							if(enemies[i].pos.x - enemies[j].pos.x > 0 && enemies[j].pos.x-enemies[i].pos.x > ENEMY_WIDTH)
+							{
+								enemies[i].pos.x += ENEMY_WIDTH - enemies[j].pos.x-enemies[i].pos.x ;
+							}
+						}
+					}
+					break;
         }
   }
 }
+	
+	
+	//  uint8_t i ;
+//	uint8_t j ;
+//	uint8_t numEnemies = (Random()%MAX_OF_ENEMIES) + 1;
+//	BOOL occupiedColumns[SCREEN_WIDTH / ENEMY_WIDTH] = {FALSSE};
+//  for ( i = 0; i < numEnemies; i++) {
+//		uint8_t column;
+//    do {
+//      column = Random() % (SCREEN_WIDTH / ENEMY_WIDTH);
+//    } while (occupiedColumns[column]);
+//    for (j = 0; j < MAX_OF_ENEMIES; j++) {
+//		if (!enemies[j].alive) {
+//          enemies[j].pos.x = column*ENEMY_WIDTH;
+//          enemies[j].pos.y = 0;
+//          enemies[j].alive = TRUUE;
+//					occupiedColumns[column] = TRUUE;
+//					break;
+//        }
+//			}
 
 // Clear the player from the screen
 void clear_player(Player p) {
