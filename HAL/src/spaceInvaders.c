@@ -137,6 +137,37 @@ void draw_player(Player p) {
 	Nokia5110_DisplayBuffer();     
 }
 
+
+
+void draw_enemies(void)
+{
+	uint8_t bu;
+	for( bu = 0;bu<MAX_OF_ENEMIES;bu++)
+	{
+		if (enemies[bu].alive)
+		{
+			Nokia5110_PrintBMP(enemies[bu].pos.x, enemies[bu].pos.y, SmallEnemy10PointA, 1);
+			Nokia5110_DisplayBuffer();     
+		}
+		
+	}
+}
+
+
+void generateEnemies(void) {
+  uint8_t i ;
+	uint8_t numEnemies = Random() % (MAX_OF_ENEMIES + 1);
+  for ( i = 0; i < numEnemies; i++) {
+    
+    if (!enemies[i].alive) {
+          enemies[i].pos.x = Random32() % (84 - ENEMY_WIDTH + 1);
+          enemies[i].pos.y = 0;
+          enemies[i].alive = TRUUE;
+          break;
+        }
+  }
+}
+
 // Clear the player from the screen
 void clear_player(Player p) {
   Nokia5110_PrintBMP(p.pos.x, p.pos.y, PlayerShip0, 1);
@@ -213,6 +244,18 @@ void updatePlayerBullet(void) {
 			}
 		}
   }
+	
+	
+	for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
+	{
+		if (enemies[bu].alive) {
+    enemies[bu].pos.y += ENEMY_SPEED;
+    if (enemies[bu].pos.y > 48) {
+      enemies[bu].alive = FALSSE;
+			}
+		}
+  }
+	generateEnemies();
 	
 	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
