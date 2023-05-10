@@ -36,6 +36,16 @@
 // image of the player's ship
 // includes two blacked out columns on the left and right sides of the image to prevent smearing when moved 2 pixels to the left or right
 // width=18 x height=8
+const unsigned char smallexplosion0[] ={
+ 0x42, 0x4D, 0xC6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00,
+ 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
+ 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0xC0, 0xC0, 0xC0, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+ 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0,
+ 0x0F, 0x00, 0x0F, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0x00, 0xF0, 0xF0, 0x0F, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00,
+ 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0xF0, 0x00, 0xF0, 0xF0, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF,
+};
+
 const unsigned char SmallEnemy10PointA[] = {
  0x42, 0x4D, 0xC6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00,
  0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
@@ -133,8 +143,23 @@ void game_Init(void)
 
 // Draw the player on the screen
 void draw_player(Player p) {
+
+	if(health==0){
+		GameOver(max_score);
+		exit(1);
+	}
+  if(p.active)
   Nokia5110_PrintBMP(p.pos.x, p.pos.y, PlayerShip0, 1);
-	Nokia5110_DisplayBuffer();     
+	Nokia5110_DisplayBuffer(); 
+	
+ /*  else
+	 {
+		 Nokia5110_PrintBMP(p.pos.x, p.pos.y, SmallEnemy10PointA, 1);
+		 Nokia5110_DisplayBuffer();
+     //delay_ms(3000);		 
+	 }
+*/	
+	
 }
 
 
@@ -294,10 +319,31 @@ void fire_PlayerBullet(void)
 	}
 }
 
-
-
+void draw_explosion()
+{
+	uint8_t bu;
+	
+	for(bu=0;bu<MAX_OF_BULLETS;bu++)
+	{
+		if(playerBullet[bu].collide)
+		{
+			playerBullet[bu].active=FALSSE;
+			playerBullet[bu].collide=FALSSE;
+			mnk4 = TRUUE;
+		}
+		if (mnk4 == TRUUE)
+		{
+			Nokia5110_PrintBMP(Explosion_xPos, Explosion_yPos, smallexplosion0, 0);
+			Nokia5110_DisplayBuffer();
+		}
+			
+	}
+	 
+}
 void updatePlayerBullet(void) {
   uint8_t bu;
+	uint8_t cu;
+	player.active=TRUUE;
 	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
 	{
 		if (playerBullet[bu].active) {
@@ -309,18 +355,101 @@ void updatePlayerBullet(void) {
 		}
   }
 	
-	
 	for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
 	{
 		if (enemies[bu].alive) {
-    enemies[bu].pos.y += ENEMY_SPEED;
-    if (enemies[bu].pos.y > 48) {
-      enemies[bu].alive = FALSSE;
+		enemies[bu].pos.y += ENEMY_SPEED;
+		if (enemies[bu].pos.y > 48) {
+			enemies[bu].alive = FALSSE;
 			}
 		}
-  }
+	}
+	if (bulletsCounter%ENEMY_FREQ == 0)
+	{
+		generateEnemies();
+	}
+	bulletsCounter++;
+	bulletsCounter %= 250;
+	mnk4 = FALSSE;
+	//player.active=TRUUE;
+	for(cu=0;cu<MAX_OF_BULLETS;cu++)
+	{
+		
+		for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
+		{
+			if(playerBullet[cu].active&&enemies[bu].alive)
+			{
+					if( playerBullet[cu].pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
+					{
+						if((playerBullet[cu].pos.x>=enemies[bu].pos.x&&playerBullet[cu].pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((playerBullet[cu].pos.x+BULLET_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(playerBullet[cu].pos.x+BULLET_WIDTH)>=(enemies[bu].pos.x)))
+						{
+							playerBullet[cu].collide=TRUUE;
+							flag=bu;
+							flag2=1;
+							max_score+=SCORE;
+							enemies[bu].alive = FALSSE;
+							Explosion_xPos = enemies[flag].pos.x;
+							Explosion_yPos = enemies[flag].pos.y;				
+							break;
+						}
+					}
+			}
+		}
+		if(flag2)
+		{
+     flag2=0;
+			break;
+		}
+	}
+	//	uint8_t bu;
+	for(bu=0;bu<MAX_OF_ENEMIES;bu++)
+	{
+			if(enemies[bu].alive)
+			{
+					if( player.pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
+					{
+						if((player.pos.x>=enemies[bu].pos.x&&player.pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((player.pos.x+PLAYER_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(player.pos.x+PLAYER_WIDTH)>=(enemies[bu].pos.x)))
+						{
+							//enemies[bu].alive = FALSSE;
+							player.collide=TRUUE;
+							--health;
+							//game_Init();
+							break;
+						}
+					}
+					
+				}
+	}
+	if(player.collide)
+	{
+		uint8_t i;
+		player.collide=FALSSE;
+		if(player.pos.x ==SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 &&player.pos.y==SCREEN_HEIGHT - PLAYER_HEIGHT - 2)
+		 player.active=FALSSE;
+		 
+		 else 
+		 {
+			 player.pos.x =SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 ;
+			 player.pos.y=SCREEN_HEIGHT - PLAYER_HEIGHT - 2;
+		 }
+		 
+		
+		
+			for (i = 0;i<MAX_OF_BULLETS;i++)
+	{
+		playerBullet[i].pos.x = 0;
+		playerBullet[i].pos.y = 0;
+		playerBullet[i].active = FALSSE;	
+		playerBullet[i].fired = FALSSE;		
+	}
+	//player.active=TRUUE;
+	for (i = 0;i<MAX_OF_ENEMIES;i++)
+	{
+		enemies[i].alive = FALSSE;	
+	}
+	}
 	generateEnemies();
-	
+	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
 
