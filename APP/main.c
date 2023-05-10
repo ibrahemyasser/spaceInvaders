@@ -26,6 +26,7 @@ int main(void){
     draw_player(player);
     draw_bullet();
 		draw_enemies();
+	  		draw_explosion();
     Nokia5110_DisplayBuffer();
     
     // Add other game logic here
