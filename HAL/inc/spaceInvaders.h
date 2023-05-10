@@ -50,7 +50,8 @@
 
 #define MAX_OF_ENEMIES			5
 #define ENEMY_SPEED					5
-
+#define SCORE								10
+#define MAX_LIVES            3
 #define ENEMY_WIDTH					0x10
 #define ENEMY_HEIGHT				0x0A
 typedef enum 
@@ -73,12 +74,15 @@ typedef struct {
 typedef struct {
   Point pos;
   BOOL active;
-	BOOL fired;
+ BOOL fired;
+BOOL collide;
 } Bullet;
 
 typedef struct {
   Point pos;
   uint16_t score;
+ BOOL active;	
+BOOL collide;
 } Player;
 typedef struct  {
   unsigned long x;      // x coordinate
@@ -116,7 +120,7 @@ void main_menu_select(void);
 void Draw(void);
 void Move(void);
 void Init(void);
-
+void draw_explosion(void);
 
 
 
