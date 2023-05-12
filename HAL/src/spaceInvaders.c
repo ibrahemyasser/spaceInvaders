@@ -353,7 +353,7 @@ void draw_explosion()
 }
 void updatePlayerBullet(void) {
   uint8_t bu;
-	uint8_t cu;
+	
 	player.active=TRUUE;
 	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
 	{
@@ -383,37 +383,17 @@ void updatePlayerBullet(void) {
 	bulletsCounter %= 250;
 	mnk4 = FALSSE;
 	//player.active=TRUUE;
-	for(cu=0;cu<MAX_OF_BULLETS;cu++)
-	{
-		
-		for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
-		{
-			if(playerBullet[cu].active&&enemies[bu].alive)
-			{
-					if( playerBullet[cu].pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
-					{
-						if((playerBullet[cu].pos.x>=enemies[bu].pos.x&&playerBullet[cu].pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((playerBullet[cu].pos.x+BULLET_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(playerBullet[cu].pos.x+BULLET_WIDTH)>=(enemies[bu].pos.x)))
-						{
-							playerBullet[cu].collide=TRUUE;
-							flag=bu;
-							flag2=1;
-							max_score+=SCORE;
-							enemies[bu].alive = FALSSE;
-							Explosion_xPos = enemies[flag].pos.x;
-							Explosion_yPos = enemies[flag].pos.y;				
-							break;
-						}
-					}
-			}
-		}
-		if(flag2)
-		{
-     flag2=0;
-			break;
-		}
-	}
+	
 	//	uint8_t bu;
-	for(bu=0;bu<MAX_OF_ENEMIES;bu++)
+
+	generateEnemies();
+	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+}
+void check_Player_Collision(void)
+{
+	uint8_t bu;
+		for(bu=0;bu<MAX_OF_ENEMIES;bu++)
 	{
 			if(enemies[bu].alive)
 			{
@@ -459,10 +439,42 @@ void updatePlayerBullet(void) {
 		enemies[i].alive = FALSSE;	
 	}
 	}
-	generateEnemies();
-	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
-	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
+void check_Bullet_Collision(void)
+{
+	  uint8_t bu;
+	  uint8_t cu;
+	for(cu=0;cu<MAX_OF_BULLETS;cu++)
+	{
+		
+		for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
+		{
+			if(playerBullet[cu].active&&enemies[bu].alive)
+			{
+					if( playerBullet[cu].pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
+					{
+						if((playerBullet[cu].pos.x>=enemies[bu].pos.x&&playerBullet[cu].pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((playerBullet[cu].pos.x+BULLET_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(playerBullet[cu].pos.x+BULLET_WIDTH)>=(enemies[bu].pos.x)))
+						{
+							playerBullet[cu].collide=TRUUE;
+							flag=bu;
+							flag2=1;
+							max_score+=SCORE;
+							enemies[bu].alive = FALSSE;
+							Explosion_xPos = enemies[flag].pos.x;
+							Explosion_yPos = enemies[flag].pos.y;				
+							break;
+						}
+					}
+			}
+		}
+		if(flag2)
+		{
+     flag2=0;
+			break;
+		}
+	}
+}
+
 
 
 
