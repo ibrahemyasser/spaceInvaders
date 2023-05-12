@@ -105,7 +105,7 @@ unsigned long FrameCount=0;
 unsigned long TimerCount;
 unsigned long Semaphore; 
 unsigned long SW1,SW2;  // input from PF4,PF0
-Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 0 };
+
 
 Bullet playerBullet[MAX_OF_BULLETS];
 Enemy_t enemies[MAX_OF_ENEMIES];
