@@ -87,7 +87,18 @@ extern GPIO_EXTI_ConfigType Fire_EXTI_Button;
 extern IntCtr_Config Int_RightButton;
 extern IntCtr_Config Int_LeftButton;
 extern IntCtr_Config Int_FireButton;
+uint8_t flag=0,flag2=0;
+uint32_t max_score=0;
 
+uint8_t mnk4 = FALSSE;
+uint8_t health=MAX_LIVES;
+
+sint16_t Explosion_xPos ;
+sint16_t Explosion_yPos ;
+
+Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 1,0};
+Bullet playerBullet[MAX_OF_BULLETS];
+Enemy_t enemies[MAX_OF_ENEMIES];
 uint8_t nextBullet = 0;
 uint8_t bulletsCounter = 1;
 unsigned long FrameCount=0; 
