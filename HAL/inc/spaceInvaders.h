@@ -120,6 +120,8 @@ void main_menu_select(void);
 void Draw(void);
 void Move(void);
 void Init(void);
+void check_Player_Collision(void);
+void check_Bullet_Collision(void);
 void draw_explosion(void);
 
 
