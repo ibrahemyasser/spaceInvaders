@@ -96,7 +96,7 @@ uint8_t health=MAX_LIVES;
 sint16_t Explosion_xPos ;
 sint16_t Explosion_yPos ;
 
-Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, 1,0};
+Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, TRUUE,FALSSE};
 Bullet playerBullet[MAX_OF_BULLETS];
 Enemy_t enemies[MAX_OF_ENEMIES];
 uint8_t nextBullet = 0;
