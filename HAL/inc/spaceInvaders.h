@@ -2,6 +2,8 @@
 #define SPACE_INVADERS_H_
 
 #include "Std_Types.h"
+#include "../MCAL/PORT/Inc/Port_Cfg.h"
+
 #define TIMER2_CFG_R            (*((volatile unsigned long *)0x40032000))
 #define TIMER2_TAMR_R           (*((volatile unsigned long *)0x40032004))
 #define TIMER2_TBMR_R           (*((volatile unsigned long *)0x40032008))
@@ -33,6 +35,7 @@
 #define SYSCTL_RCGCTIMER_R      (*((volatile unsigned long *)0x400FE604))
 #define NVIC_EN0_R              (*((volatile unsigned long *)0xE000E100))
 
+
 #define SCREEN_WIDTH 			84
 #define SCREEN_HEIGHT 		48
 
@@ -43,17 +46,27 @@
 #define BULLET_HEIGHT			6
 
 #define PLAYER_SPEED 2
-#define PLAYER_BULLET_SPEED 5
+#define PLAYER_BULLET_SPEED 2
+#define PLAYER_PADDING			4
 
 #define BULLET_DELAY				100
-#define MAX_OF_BULLETS			5
+#define MAX_OF_BULLETS			2
 
-#define MAX_OF_ENEMIES			5
-#define ENEMY_SPEED					5
+#define MAX_OF_ENEMIES			4
+#define ENEMY_SPEED					2
+#define ENEMY_FREQ					3
+
 #define SCORE								10
-#define MAX_LIVES            3
+#define MAX_LIVES           3
+
 #define ENEMY_WIDTH					0x10
 #define ENEMY_HEIGHT				0x0A
+#define SYSCTL_RCGC2_GPIOA      0x00000001  // port A Clock Gating Control
+#define UART_CTL_UARTEN         0x00000001  // UART Enable
+#define UART_LCRH_WLEN_8        0x00000060  // 8 bits
+#define UART_LCRH_FEN           0x00000010  // UART Enable FIFOs
+
+#define SYSCTL_RCGC1_UART0      0x00000001  // UART0 Clock Gating Control
 typedef enum 
 {
 	FALSSE=0,
@@ -74,15 +87,16 @@ typedef struct {
 typedef struct {
   Point pos;
   BOOL active;
- BOOL fired;
-BOOL collide;
+	BOOL fired;
+	BOOL collide;
 } Bullet;
 
 typedef struct {
   Point pos;
-  uint16_t score;
- BOOL active;	
-BOOL collide;
+ // uint16_t score;
+	BOOL active;
+	//BOOL fired;
+	BOOL collide;
 } Player;
 typedef struct  {
   unsigned long x;      // x coordinate
@@ -92,22 +106,43 @@ typedef struct  {
 }STyp;         
 
 
+extern Port_ConfigType Move_Right_Button;
+extern Port_ConfigType Move_Left_Button;
+extern Port_ConfigType Fire_Button;	
+	
+extern Port_ConfigType led_indicators [MAX_LIVES];
+extern GPIO_EXTI_ConfigType Right_Button;
+extern GPIO_EXTI_ConfigType Left_Button;
+extern GPIO_EXTI_ConfigType Fire_EXTI_Button;
+	
+extern IntCtr_Config Int_RightButton;
+extern IntCtr_Config Int_LeftButton;
+extern IntCtr_Config Int_FireButton;
+
 extern Player player;
 extern Bullet playerBullet[MAX_OF_BULLETS];
 
 extern uint8_t nextBullet ;
 extern uint8_t bulletsCounter;
+extern uint8_t enemyGenrateFlag;
+
+extern uint8_t mnk4;
+extern uint8_t moveLeft_Flag ;
+extern uint8_t moveRight_Flag ;
+
+extern uint8_t start ;
+extern uint8_t bye	;
 
 extern const unsigned char PlayerShip0[] ;
 extern const unsigned char Bullet_Map[] ;
 
-void draw_player(Player p) ;
-void clear_player(Player p); 
+void draw_player(void);
+void clear_player(void); 
 void move_left(void); 
 void move_right(void);
 void game_Init(void);
 void game_InterruptInit(void);
-void clear_bullet(Player p);
+void clear_bullet(Bullet p);
 void draw_bullet(void);
 void updatePlayerBullet(void);
 void fire_PlayerBullet(void);
@@ -120,10 +155,8 @@ void main_menu_select(void);
 void Draw(void);
 void Move(void);
 void Init(void);
-void check_Player_Collision(void);
-void check_Bullet_Collision(void);
 void draw_explosion(void);
-
-
+void check_Player_Collide(void);
+void check_Enemy_Collide(void);
 
 #endif
