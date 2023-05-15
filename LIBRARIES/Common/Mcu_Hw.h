@@ -272,6 +272,32 @@ typedef struct
 	volatile uint32_t 							STCURRENT;		
 }SYSTICK_Type;
 
+typedef struct {                                    /*!< UART0 Structure                                                       */
+  volatile uint32_t  DR;                                /*!< UART Data                                                             */
+  volatile uint32_t  ECR_UART_ALT;                    /*!< UART Receive Status/Error Clear                                       */
+  //volatile uint32_t  RSR;                             /*!< UART Receive Status/Error Clear                                       */
+  volatile const  uint32_t  RESERVED0[4];
+  volatile uint32_t  FR;                                /*!< UART Flag                                                             */
+  volatile const  uint32_t  RESERVED1;
+  volatile uint32_t  ILPR;                              /*!< UART IrDA Low-Power Register                                          */
+  volatile uint32_t  IBRD;                              /*!< UART Integer Baud-Rate Divisor                                        */
+  volatile uint32_t  FBRD;                              /*!< UART Fractional Baud-Rate Divisor                                     */
+  volatile uint32_t  LCRH;                              /*!< UART Line Control                                                     */
+  volatile uint32_t  CTL;                               /*!< UART Control                                                          */
+  volatile uint32_t  IFLS;                              /*!< UART Interrupt FIFO Level Select                                      */
+  volatile uint32_t  IM;                                /*!< UART Interrupt Mask                                                   */
+  volatile uint32_t  RIS;                               /*!< UART Raw Interrupt Status                                             */
+  volatile uint32_t  MIS;                               /*!< UART Masked Interrupt Status                                          */
+  volatile   uint32_t  ICR;                               /*!< UART Interrupt Clear                                                  */
+  volatile uint32_t  DMACTL;                            /*!< UART DMA Control                                                      */
+  volatile const  uint32_t  RESERVED2[22];
+  volatile uint32_t  _9BITADDR;                         /*!< UART 9-Bit Self Address                                               */
+  volatile uint32_t  _9BITAMASK;                        /*!< UART 9-Bit Self Address Mask                                          */
+  volatile const  uint32_t  RESERVED3[965];
+  volatile uint32_t  PP;                                /*!< UART Peripheral Properties                                            */
+  volatile const  uint32_t  RESERVED4;
+  volatile uint32_t  CC;                                /*!< UART Clock Configuration                                              */
+} UART0_Type;
 
 
 /**********************************************************************************************************************
@@ -303,6 +329,7 @@ typedef struct
 #define GPIOE_BASE_AHB							0x4005C000UL
 #define GPIOF_BASE							  	0x40025000UL
 #define GPIOF_BASE_AHB							0x4005D000UL
+#define UART0_BASE                      0x4000C000UL
 
 
 #define NVIC_BASE										( CORTEXM4_PERI_BASE_ADDRESS + 0x0100UL )
@@ -324,6 +351,8 @@ typedef struct
 #define GPIOE_AHB							((GPIO_Type				*)	GPIOE_BASE_AHB)
 #define GPIOF									((GPIO_Type				*)	GPIOF_BASE)
 #define GPIOF_AHB							((GPIO_Type				*)	GPIOF_BASE_AHB)
+
+#define UART0                 ((UART0_Type      *) 	UART0_BASE)
 
 #define WDT0 									((WDT_Type 				*)	WDT0_BASE)
 #define WDT1 									((WDT_Type 				*)	WDT1_BASE)
