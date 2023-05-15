@@ -13,6 +13,7 @@
  *  INCLUDES
  *********************************************************************************************************************/
 #include "../MCAL/PORT/Inc/Port_Cfg.h"
+#include "spaceInvaders.h"
 
 /**********************************************************************************************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
@@ -25,11 +26,46 @@
 /**********************************************************************************************************************
  *  GLOBAL DATA
  *********************************************************************************************************************/
-Port_ConfigType Move_Right_Button =
+
+Port_ConfigType led_indicators [MAX_LIVES] = {
 	{
 		GPIOF,
 		PORTF,
-		PF0,
+		PF1,
+		DIGITAL_PIN,
+		HIGH,
+		OUTPUT,
+		PULL_UP,
+		R8R
+		
+	},
+	{
+		GPIOF,
+		PORTF,
+		PF2,
+		DIGITAL_PIN,
+		HIGH,
+		OUTPUT,
+		PULL_UP,
+		R8R
+	},
+	{
+		GPIOF,
+		PORTF,
+		PF3,
+		DIGITAL_PIN,
+		HIGH,
+		OUTPUT,
+		PULL_UP,
+		R8R
+	}
+};
+
+Port_ConfigType Move_Right_Button =
+	{
+		GPIOD,
+		PORTD,
+		PD0,
 		DIGITAL_PIN,
 		HIGH,
 		INPUT,
@@ -52,9 +88,9 @@ Port_ConfigType Move_Right_Button =
 	
 Port_ConfigType Move_Left_Button= 
 	{
-		GPIOF,
-		PORTF,
-		PF4,
+		GPIOC,
+		PORTC,
+		PC4,
 		DIGITAL_PIN,
 		HIGH,
 		INPUT,
@@ -65,28 +101,28 @@ Port_ConfigType Move_Left_Button=
 	
 GPIO_EXTI_ConfigType Right_Button=
 	{
-		GPIOF,
-		PF0,
-		LEVEL_SENSETIVE,
+		GPIOD,
+		PD0,
+		EDGE_SENSITIVE,
 		EDGE_CONTROLLED,
 		FALLING_LOW,
-		GPIO_PortF_IRQn
+		GPIO_PortD_IRQn
 	};
 	
 GPIO_EXTI_ConfigType Left_Button=
 	{
-		GPIOF,
-		PF4,
-		LEVEL_SENSETIVE,
+		GPIOC,
+		PC4,
+		EDGE_SENSITIVE,
 		EDGE_CONTROLLED,
 		FALLING_LOW,
-		GPIO_PortF_IRQn
+		GPIO_PortC_IRQn
 	};
 GPIO_EXTI_ConfigType Fire_EXTI_Button=
 	{
 		GPIOE,
 		PE0,
-		LEVEL_SENSETIVE,
+		EDGE_SENSITIVE,
 		EDGE_CONTROLLED,
 		FALLING_LOW,
 		GPIO_PortE_IRQn
