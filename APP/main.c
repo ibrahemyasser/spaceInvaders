@@ -10,26 +10,30 @@
 int main(void){
   
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
-	Nokia5110_Init();
-  game_Init();
-	Nokia5110_ClearBuffer();
-	//main_menu_select();
 	Systick_Init();
-	
+	Nokia5110_Init();
+  Nokia5110_ClearBuffer();
+	Nokia5110_DisplayBuffer();
+	game_Init();
+	main_menu_select();
   // Game loop
   while (1) {
  
     //updatePlayerBullet();
 
     // Draw game state
-    Nokia5110_ClearBuffer();
-    draw_player(player);
-    draw_bullet();
-    draw_enemies();
-    check_Player_Collision();
-    check_Bullet_Collision();
+     Nokia5110_ClearBuffer();
+		if (enemyGenrateFlag == TRUUE)
+		{
+			enemyGenrateFlag = FALSSE;
+			generateEnemies();
+		}
+		check_Player_Collide();
+		check_Enemy_Collide();
     draw_explosion();
-    
+		draw_player();
+    draw_bullet();
+		draw_enemies();
     Nokia5110_DisplayBuffer();
     
     // Add other game logic here
