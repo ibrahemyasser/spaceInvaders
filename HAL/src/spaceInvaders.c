@@ -1,5 +1,4 @@
-
-/**********************************************************************************************************************
+/****************************************
  *  FILE DESCRIPTION
  *  -----------------------------------------------------------------------------------------------------------------*/
 /**        \file  FileName.c
@@ -8,13 +7,12 @@
  *      \details  
  *
  *
- *********************************************************************************************************************/
+ ***************************************/
 
-/**********************************************************************************************************************
+/****************************************
  *  INCLUDES
- *********************************************************************************************************************/
+ ***************************************/
 #include "../Nokia5110.h"
-#include "../TExaS.h"
 #include "../LIBRARIES/common/Std_Types.h"
 #include "../LIBRARIES/CpuDriver/inc/cpu_driver.h"
 #include "../../MCAL/SYSTICK/Inc/Systick.h"
@@ -22,30 +20,22 @@
 #include "../inc/spaceInvaders.h"
 #include "../MCAL/PORT/Inc/Port_Cfg.h"
 #include "../Random.h"
-/**********************************************************************************************************************
+#include "Bit_Math.h"
+
+/****************************************
 *  LOCAL MACROS CONSTANT\FUNCTION
-*********************************************************************************************************************/
+***************************************/
 
-/**********************************************************************************************************************
+/****************************************
  *  LOCAL DATA 
- *********************************************************************************************************************/
+ ***************************************/
 
-/**********************************************************************************************************************
+/****************************************
  *  GLOBAL DATA
- *********************************************************************************************************************/
+ ***************************************/
 // image of the player's ship
 // includes two blacked out columns on the left and right sides of the image to prevent smearing when moved 2 pixels to the left or right
 // width=18 x height=8
-const unsigned char smallexplosion0[] ={
- 0x42, 0x4D, 0xC6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00,
- 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
- 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0xC0, 0xC0, 0xC0, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
- 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0,
- 0x0F, 0x00, 0x0F, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0x00, 0xF0, 0xF0, 0x0F, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00,
- 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0xF0, 0x00, 0xF0, 0xF0, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00,
- 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF,
-};
-
 const unsigned char SmallEnemy10PointA[] = {
  0x42, 0x4D, 0xC6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00,
  0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
@@ -71,66 +61,72 @@ const unsigned char Bullet_Map[]  ={
  0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0xFF,
 };
 
-
+const unsigned char smallexplosion0[] ={
+ 0x42, 0x4D, 0xC6, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x76, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00,
+ 0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x80,
+ 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0xC0, 0xC0, 0xC0, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0xFF,
+ 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0,
+ 0x0F, 0x00, 0x0F, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0x00, 0xF0, 0xF0, 0x0F, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00,
+ 0xF0, 0x00, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0xF0, 0x00, 0xF0, 0xF0, 0x00, 0xF0, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00,
+ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF,
+};
 
 
 	// Set up the player at the bottom center of the screen
 
-extern Port_ConfigType Move_Right_Button;
-extern Port_ConfigType Move_Left_Button;
-extern Port_ConfigType Fire_Button;	
-	
-extern GPIO_EXTI_ConfigType Right_Button;
-extern GPIO_EXTI_ConfigType Left_Button;
-extern GPIO_EXTI_ConfigType Fire_EXTI_Button;
-	
-extern IntCtr_Config Int_RightButton;
-extern IntCtr_Config Int_LeftButton;
-extern IntCtr_Config Int_FireButton;
+
 uint8_t flag=0,flag2=0;
 uint32_t max_score=0;
-
-uint8_t mnk4 = FALSSE;
-uint8_t health=MAX_LIVES;
-
-sint16_t Explosion_xPos ;
-sint16_t Explosion_yPos ;
-
-Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_HEIGHT - 2}, TRUUE,FALSSE};
-Bullet playerBullet[MAX_OF_BULLETS];
-Enemy_t enemies[MAX_OF_ENEMIES];
 uint8_t nextBullet = 0;
-uint8_t bulletsCounter = 1;
+uint8_t bulletsCounter = 0;
+uint8_t mnk4 = FALSSE;
+uint8_t lifes=MAX_LIVES;
+uint8_t enemyGenrateFlag = TRUUE;
+uint8_t generateCount = 0;
+uint8_t start = FALSSE;
+uint8_t bye		= FALSSE;
+
 unsigned long FrameCount=0; 
 unsigned long TimerCount;
 unsigned long Semaphore; 
 unsigned long SW1,SW2;  // input from PF4,PF0
 
+uint8_t moveLeft_Flag = FALSSE;
+uint8_t moveRight_Flag = FALSSE;
+sint16_t Explosion_xPos ;
+sint16_t Explosion_yPos ;
 
+Player player = { {SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2, SCREEN_HEIGHT - PLAYER_PADDING}, TRUUE,FALSSE};
 Bullet playerBullet[MAX_OF_BULLETS];
 Enemy_t enemies[MAX_OF_ENEMIES];
-
-
 STyp Enemy[4];
-
-/**********************************************************************************************************************
+/****************************************
  *  LOCAL FUNCTION PROTOTYPES
- *********************************************************************************************************************/
+ ***************************************/
 
-/**********************************************************************************************************************
+/****************************************
  *  LOCAL FUNCTIONS
- *********************************************************************************************************************/
+ ***************************************/
 
-/**********************************************************************************************************************
+/****************************************
  *  GLOBAL FUNCTIONS
- *********************************************************************************************************************/
-
+ ***************************************/
+void delay_ms(int milliseconds) {
+  int i, j;
+  
+  for (i = 0; i < milliseconds; i++) {
+    for (j = 0; j < 3180; j++) {}  // Adjust this value to create a delay of 1 millisecond
+  }
+}
 void game_Init(void)
 {
 	uint8_t i;
 	Port_Init(&Move_Right_Button);
 	Port_Init(&Move_Left_Button);
 	Port_Init(&Fire_Button);
+	for (i=0; i<MAX_LIVES; i++){
+	Port_Init(&led_indicators[i]);
+	}
 	
 	Port_EXTI_Init(&Right_Button);
 	Port_EXTI_Init(&Left_Button);
@@ -146,22 +142,37 @@ void game_Init(void)
 		playerBullet[i].active = FALSSE;	
 		playerBullet[i].fired = FALSSE;		
 	}
+	//player.active=TRUUE;
 	for (i = 0;i<MAX_OF_ENEMIES;i++)
 	{
 		enemies[i].alive = FALSSE;	
 	}
+	cpuDriver_EnableGlobalInterrupt();
 }
 
 // Draw the player on the screen
-void draw_player(Player p) {
+void draw_player(void) {
 
-	if(health==0){
+	if(lifes==0){
 		GameOver(max_score);
 		exit(1);
 	}
-  if(p.active)
-  Nokia5110_PrintBMP(p.pos.x, p.pos.y, PlayerShip0, 1);
-	Nokia5110_DisplayBuffer(); 
+	if(moveLeft_Flag == TRUUE)
+	{
+		move_left();
+		moveLeft_Flag = FALSSE;
+	}
+	if(moveRight_Flag == TRUUE)
+	{
+		move_right();
+		moveRight_Flag = FALSSE;
+	}
+  if(player.active)
+	{
+		Nokia5110_PrintBMP(player.pos.x, player.pos.y, PlayerShip0, 1);
+	}
+  
+	//Nokia5110_DisplayBuffer(); 
 	
  /*  else
 	 {
@@ -173,36 +184,103 @@ void draw_player(Player p) {
 	
 }
 
+// Clear the player from the screen
+void clear_player(void) {
+  Nokia5110_PrintBMP(player.pos.x, player.pos.y, PlayerShip0, 1);
+}
+
+// Move the player left
+void move_left(void) {
+  
+	if (player.pos.x >= 0) {
+		player.pos.x -= PLAYER_SPEED;
+		if (player.pos.x <= 0)
+		{
+			player.pos.x = 0;
+		}
+
+  }
+}
+
+// Move the player right
+void move_right(void) {
+  
+  if (player.pos.x <= SCREEN_WIDTH - PLAYER_WIDTH) {
+		player.pos.x += PLAYER_SPEED;
+		if (player.pos.x >= SCREEN_WIDTH - PLAYER_WIDTH)
+		{
+			player.pos.x = SCREEN_WIDTH - PLAYER_WIDTH;
+		}
+
+  }
+  
+}
+void draw_bullet() {
+	uint8_t bu;
+	for( bu = 0;bu<MAX_OF_BULLETS;bu++)
+	{
+		if (playerBullet[bu].active)
+		{
+			Nokia5110_PrintBMP(playerBullet[bu].pos.x, playerBullet[bu].pos.y, Bullet_Map, 1);
+		}
+	}
+  
+}
+
+//Game Over 
+
+void GameOver(int MAX_SCORE){
+	Nokia5110_Clear();
+  Systick_StopTimer();
+  Nokia5110_SetCursor(2, 0);
+  Nokia5110_OutString("GAME OVER");
+	Nokia5110_SetCursor(2, 2);
+	Nokia5110_OutString("Score:");
+	Nokia5110_SetCursor(1, 4);
+	Nokia5110_OutUDec(MAX_SCORE);
+	
+	
+}
+
+//main menu
+
+void MAIN_MENU(void){
+		
+  Nokia5110_Clear();
+  Nokia5110_SetCursor(0, 0);
+  Nokia5110_OutString("  MAIN MENU");
+  Nokia5110_SetCursor(0, 1);
+  Nokia5110_OutString("............");
+  Nokia5110_SetCursor(0, 3);
+  Nokia5110_OutString("1-GO TO PLAY");
+  Nokia5110_SetCursor(0, 5);
+  Nokia5110_OutString("2- EXIT");
+  
+}
 
 
-void draw_enemies(void)
+
+// Clear the player from the screen
+void clear_bullet(Bullet p) {
+  Nokia5110_PrintBMP(p.pos.x, p.pos.y, Bullet_Map, 1);
+}
+
+void fire_PlayerBullet(void)
 {
 	uint8_t bu;
-	for( bu = 0;bu<MAX_OF_ENEMIES;bu++)
+	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
 	{
-		if (enemies[bu].alive)
+		if ((!(playerBullet[bu].active))&&(!(playerBullet[bu].fired)))
 		{
-			Nokia5110_PrintBMP(enemies[bu].pos.x, enemies[bu].pos.y, SmallEnemy10PointA, 1);
-			Nokia5110_DisplayBuffer();     
+			playerBullet[bu].pos.x = player.pos.x + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
+			playerBullet[bu].pos.y = player.pos.y - 7 ;
+			playerBullet[bu].active = TRUUE; 
+			playerBullet[bu].fired = TRUUE;
+			break;
 		}
 		
 	}
 }
-
-
-// void generateEnemies(void) {
-//   uint8_t i ;
-// 	uint8_t numEnemies = Random() % (MAX_OF_ENEMIES + 1);
-//   for ( i = 0; i < numEnemies; i++) {
-    
-//     if (!enemies[i].alive) {
-//           enemies[i].pos.x = Random32() % (84 - ENEMY_WIDTH + 1);
-//           enemies[i].pos.y = 0;
-//           enemies[i].alive = TRUUE;
-//           break;
-//         }
-//   }
-// }
 
 
 void generateEnemies(void) {
@@ -214,18 +292,18 @@ void generateEnemies(void) {
 		
     if (!enemies[i].alive) {
           enemies[i].pos.x = Random32() % (84 - ENEMY_WIDTH + 1);
-          enemies[i].pos.y = 0;
+          enemies[i].pos.y = ENEMY_HEIGHT;
           enemies[i].alive = TRUUE;
 					if(i==0)
 					{
 						if(enemies[i].pos.x - enemies[MAX_OF_ENEMIES-1].pos.x <= 0 && enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x < ENEMY_WIDTH)
 							{
-								enemies[i].pos.x -= ENEMY_WIDTH - enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x ;
+								enemies[i].pos.x -= ENEMY_WIDTH - (enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x );
 								continue;
 							}
 							if(enemies[i].pos.x - enemies[MAX_OF_ENEMIES-1].pos.x > 0 && enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x > ENEMY_WIDTH)
 							{
-								enemies[i].pos.x += ENEMY_WIDTH - enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x ;
+								enemies[i].pos.x += ENEMY_WIDTH - (enemies[MAX_OF_ENEMIES-1].pos.x-enemies[i].pos.x );
 							}
 					}
 					for(j=0;j<i;j++)
@@ -234,12 +312,12 @@ void generateEnemies(void) {
 						{
 							if(enemies[i].pos.x - enemies[j].pos.x <= 0 && enemies[j].pos.x-enemies[i].pos.x < ENEMY_WIDTH)
 							{
-								enemies[i].pos.x -= ENEMY_WIDTH - enemies[j].pos.x-enemies[i].pos.x ;
+								enemies[i].pos.x -= ENEMY_WIDTH - (enemies[j].pos.x-enemies[i].pos.x );
 								continue;
 							}
 							if(enemies[i].pos.x - enemies[j].pos.x > 0 && enemies[j].pos.x-enemies[i].pos.x > ENEMY_WIDTH)
 							{
-								enemies[i].pos.x += ENEMY_WIDTH - enemies[j].pos.x-enemies[i].pos.x ;
+								enemies[i].pos.x += ENEMY_WIDTH - (enemies[j].pos.x-enemies[i].pos.x );
 							}
 						}
 					}
@@ -268,68 +346,6 @@ void generateEnemies(void) {
 //        }
 //			}
 
-// Clear the player from the screen
-void clear_player(Player p) {
-  Nokia5110_PrintBMP(p.pos.x, p.pos.y, PlayerShip0, 1);
-}
-
-// Move the player left
-void move_left(void) {
-  
-	if (player.pos.x > 0) {
-		clear_player(player);
-		draw_player(player);
-		player.pos.x -= PLAYER_SPEED;
-  }
-}
-
-// Move the player right
-void move_right(void) {
-  
-  if (player.pos.x < SCREEN_WIDTH - PLAYER_WIDTH) {
-    clear_player(player);
-		player.pos.x += PLAYER_SPEED;
-		draw_player(player);
-  }
-  
-}
-void draw_bullet() {
-	uint8_t bu;
-	for( bu = 0;bu<MAX_OF_BULLETS;bu++)
-	{
-		if (playerBullet[bu].active)
-		{
-			Nokia5110_PrintBMP(playerBullet[bu].pos.x, playerBullet[bu].pos.y, Bullet_Map, 1);
-			Nokia5110_DisplayBuffer();     
-		}
-		
-	}
-  
-	
-}
-
-// Clear the player from the screen
-void clear_bullet(Player p) {
-  Nokia5110_PrintBMP(p.pos.x, p.pos.y, Bullet_Map, 1);
-}
-
-void fire_PlayerBullet(void)
-{
-	uint8_t bu;
-	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
-	{
-		if ((!(playerBullet[bu].active))&&(!(playerBullet[bu].fired)))
-		{
-			playerBullet[bu].pos.x = player.pos.x + PLAYER_WIDTH / 2 - BULLET_WIDTH / 2;
-			playerBullet[bu].pos.y = player.pos.y - 7 ;
-			playerBullet[bu].active = TRUUE; 
-			playerBullet[bu].fired = TRUUE;
-			break;
-		}
-		
-	}
-}
-
 void draw_explosion()
 {
 	uint8_t bu;
@@ -340,6 +356,7 @@ void draw_explosion()
 		{
 			playerBullet[bu].active=FALSSE;
 			playerBullet[bu].collide=FALSSE;
+			playerBullet[bu].fired = FALSSE;
 			mnk4 = TRUUE;
 		}
 		if (mnk4 == TRUUE)
@@ -352,7 +369,14 @@ void draw_explosion()
 	 
 }
 void updatePlayerBullet(void) {
-  uint8_t bu;
+	
+  uint8_t bu=0;
+	Systick_StopTimer();
+	if((++generateCount)%ENEMY_FREQ == 0)
+	{
+		enemyGenrateFlag = TRUUE;
+		generateCount= 0;
+	}
 	
 	player.active=TRUUE;
 	for(bu = 0;bu<MAX_OF_BULLETS;bu++)
@@ -375,75 +399,17 @@ void updatePlayerBullet(void) {
 			}
 		}
 	}
-	if (bulletsCounter%ENEMY_FREQ == 0)
-	{
-		generateEnemies();
-	}
-	bulletsCounter++;
-	bulletsCounter %= 250;
 	mnk4 = FALSSE;
 	//player.active=TRUUE;
-	
-	//	uint8_t bu;
 
-	generateEnemies();
 	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
-	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+	//Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
-void check_Player_Collision(void)
+
+void check_Enemy_Collide(void)
 {
+	uint8_t cu;
 	uint8_t bu;
-		for(bu=0;bu<MAX_OF_ENEMIES;bu++)
-	{
-			if(enemies[bu].alive)
-			{
-					if( player.pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
-					{
-						if((player.pos.x>=enemies[bu].pos.x&&player.pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((player.pos.x+PLAYER_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(player.pos.x+PLAYER_WIDTH)>=(enemies[bu].pos.x)))
-						{
-							//enemies[bu].alive = FALSSE;
-							player.collide=TRUUE;
-							--health;
-							//game_Init();
-							break;
-						}
-					}
-					
-				}
-	}
-	if(player.collide)
-	{
-		uint8_t i;
-		player.collide=FALSSE;
-		if(player.pos.x ==SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 &&player.pos.y==SCREEN_HEIGHT - PLAYER_HEIGHT - 2)
-		 player.active=FALSSE;
-		 
-		 else 
-		 {
-			 player.pos.x =SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 ;
-			 player.pos.y=SCREEN_HEIGHT - PLAYER_HEIGHT - 2;
-		 }
-		 
-		
-		
-			for (i = 0;i<MAX_OF_BULLETS;i++)
-	{
-		playerBullet[i].pos.x = 0;
-		playerBullet[i].pos.y = 0;
-		playerBullet[i].active = FALSSE;	
-		playerBullet[i].fired = FALSSE;		
-	}
-	//player.active=TRUUE;
-	for (i = 0;i<MAX_OF_ENEMIES;i++)
-	{
-		enemies[i].alive = FALSSE;	
-	}
-	}
-}
-void check_Bullet_Collision(void)
-{
-	  uint8_t bu;
-	  uint8_t cu;
 	for(cu=0;cu<MAX_OF_BULLETS;cu++)
 	{
 		
@@ -475,38 +441,68 @@ void check_Bullet_Collision(void)
 	}
 }
 
-
-
-
-
-//Game Over 
-
-void GameOver(int MAX_SCORE){
-	
-  Nokia5110_Clear();
-  Systick_StopTimer();
-  Nokia5110_SetCursor(2, 0);
-  Nokia5110_OutString("GAME OVER");
-	Nokia5110_SetCursor(2, 2);
-	Nokia5110_OutString("Score:");
-	Nokia5110_SetCursor(1, 4);
-	Nokia5110_OutUDec(MAX_SCORE);
-}
-
-//main menu
-
-void MAIN_MENU(void){
+void check_Player_Collide(void)
+{
+	uint8_t bu;
+	for(bu=0;bu<MAX_OF_ENEMIES;bu++)
+	{
+			if(enemies[bu].alive)
+			{
+					if( player.pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
+					{
+						if((player.pos.x>=enemies[bu].pos.x&&player.pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH))||((player.pos.x+PLAYER_WIDTH)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(player.pos.x+PLAYER_WIDTH)>=(enemies[bu].pos.x)))
+						{
+							//enemies[bu].alive = FALSSE;
+							player.collide=TRUUE;
+							--lifes;
+						
+							CLEAR_BIT_PERIPH_BAND(led_indicators[lifes].GPIOx->GPIODATA,led_indicators[lifes].ChannelId);
+							//game_Init();
+							break;
+						}
+					}
+					
+				}
+	}
+	if(player.collide)
+	{
+		uint8_t i;
+		player.collide=FALSSE;
+		if(player.pos.x ==SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 &&player.pos.y==SCREEN_HEIGHT - PLAYER_HEIGHT - 2)
+		 player.active=FALSSE;
+		 
+		 else 
+		 {
+			 player.pos.x =SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 ;
+			 player.pos.y=SCREEN_HEIGHT - PLAYER_PADDING;
+		 }
+		 
 		
-  Nokia5110_Clear();
-  Nokia5110_SetCursor(0, 0);
-  Nokia5110_OutString("  MAIN MENU");
-  Nokia5110_SetCursor(0, 1);
-  Nokia5110_OutString("............");
-  Nokia5110_SetCursor(0, 3);
-  Nokia5110_OutString("1-GO TO PLAY");
-  Nokia5110_SetCursor(0, 5);
-  Nokia5110_OutString("2- EXIT");
-  
+		
+	for (i = 0;i<MAX_OF_BULLETS;i++)
+	{
+		playerBullet[i].pos.x = 0;
+		playerBullet[i].pos.y = 0;
+		playerBullet[i].active = FALSSE;	
+		playerBullet[i].fired = FALSSE;		
+	}
+	//player.active=TRUUE;
+	for (i = 0;i<MAX_OF_ENEMIES;i++)
+	{
+		enemies[i].alive = FALSSE;	
+	}
+	}
+}
+void draw_enemies(void)
+{
+	uint8_t bu;
+	for( bu = 0;bu<MAX_OF_ENEMIES;bu++)
+	{
+		if (enemies[bu].alive)
+		{
+			Nokia5110_PrintBMP(enemies[bu].pos.x, enemies[bu].pos.y, SmallEnemy10PointA, 1);
+		}
+	}
 }
 
 
@@ -594,43 +590,43 @@ void BYE(void){
 
 
 void main_menu_select(void){
-  
-	 while(1){
-    SW1 = GPIOF->GPIODATA&0x10;     // read PF4 into SW1
-    SW2 = GPIOF->GPIODATA&0x01;     // read PF0 into SW2
-		
-    if(SW2&&(!SW1)){                     // SW1 is pressed
-  
-			//go to play
-    } 
-		else if(SW1&&(!SW2)){              // SW2 is pressed
-			  BYE();	
-     }
-  }
+		MAIN_MENU();
+	 while((!start) &&  (!bye));
+		if(start)
+		{
+			Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
+			return;
+		}
+		if(bye)
+		{
+			BYE();
+			exit(1);
+		}
+}
+
+void UART_Init(void){
+// as part of Lab 11, modify this program to use UART0 instead of UART1
+//                 switching from PC5,PC4 to PA1,PA0
+  SYSCTRL->RCGC1 |= SYSCTL_RCGC1_UART0; // activate UART0
+
+  SYSCTRL->RCGC2 |= SYSCTL_RCGC2_GPIOA; // activate port A
+  UART0->CTL  &= ~UART_CTL_UARTEN;      // disable UART
+	UART0->IBRD = 43;											// IBRD = int(80,000,000 / (16 * 115200)) = int(43.402778)
+        
+  UART0->FBRD = 26;                    // FBRD = round(0.402778 * 64) = 26
+                                        // 8 bit word length (no parity bits, one stop bit, FIFOs)
+  UART0->LCRH = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
+  UART0->CTL |= UART_CTL_UARTEN;       // enable UART
+  GPIOA->GPIOAFSEL |= 0x03;           // enable alt funct on PA1,PA0
+  GPIOA->GPIODEN |= 0x03;             // enable digital I/O on PA1,PA0
+                                        // configure PA1,PA0 as UART0
+  GPIOA->GPIOPCTL= (GPIOA->GPIOPCTL&0xFFFFFF00)+0x00000011;
+  GPIOA->GPIOAMSEL &= ~0x03;          // disable analog functionality on PA1,PA0
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/******************************************************************************
+/**************************
 * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)        
 * \Description     : Describe this service                                    
 *                                                                             
@@ -640,18 +636,9 @@ void main_menu_select(void){
 * \Parameters (out): None                                                      
 * \Return value:   : Std_ReturnType  E_OK
 *                                    E_NOT_OK                                  
-*******************************************************************************/
+***************************/
 
 
-/**********************************************************************************************************************
+/****************************************
  *  END OF FILE: spaceInvaders.c
- *********************************************************************************************************************/
-
-
-
-
-
-
-
-
-
+ ***************************************/
