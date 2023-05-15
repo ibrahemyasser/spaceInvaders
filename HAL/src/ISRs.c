@@ -51,16 +51,32 @@ extern Port_ConfigType Fire_Button;
  *********************************************************************************************************************/
 void GPIOPortE_Handler(void)
 {
-	Nokia5110_ClearBuffer();
-	Nokia5110_DisplayBuffer();      // draw buffer
 	if (Fire_Button.GPIOx->GPIORIS & (1<<Fire_Button.ChannelId))
 	{
 		SET_BIT_PERIPH_BAND(Fire_Button.GPIOx->GPIOICR,Fire_Button.ChannelId);
 	//	playerBullet.active = TRUUE;
+		fire_PlayerBullet();
+		
+	}
+}
+void GPIOPortC_Handler(void)
+{
+	if (Move_Left_Button.GPIOx->GPIORIS & (1<<Move_Left_Button.ChannelId))
+	{//s2 pressed
+		SET_BIT_PERIPH_BAND(Move_Left_Button.GPIOx->GPIOICR,Move_Left_Button.ChannelId);
+		if(!bye)
+		{
+			bye = TRUUE;
+			return;
+		}
+		moveLeft_Flag = TRUUE;
+		//move_left();
+		
+		//playerBullet.active = TRUUE;
 	}
 }
 
-void GPIOPortF_Handler(void)
+void GPIOPortD_Handler(void)
 {
 	//Nokia5110_ClearBuffer();
 	//Nokia5110_DisplayBuffer();      // draw buffer
@@ -68,16 +84,13 @@ void GPIOPortF_Handler(void)
 	if(Move_Right_Button.GPIOx->GPIORIS & (1<<Move_Right_Button.ChannelId))  
 	{//s1 pressed
 		SET_BIT_PERIPH_BAND(Move_Right_Button.GPIOx->GPIOICR,Move_Right_Button.ChannelId);
-		
-		fire_PlayerBullet();
-		//playerBullet.active = TRUUE;
-		Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
-		
-	}
-	else if (Move_Left_Button.GPIOx->GPIORIS & (1<<Move_Left_Button.ChannelId))
-	{//s3 pressed
-		SET_BIT_PERIPH_BAND(Move_Left_Button.GPIOx->GPIOICR,Move_Left_Button.ChannelId);
-		move_left();
+		if(!start)
+		{
+			start = TRUUE;
+			return;
+		}
+		moveRight_Flag = TRUUE;
+		//move_right();
 	}
 }
 
