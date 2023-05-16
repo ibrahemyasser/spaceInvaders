@@ -52,6 +52,7 @@
 // SSI0Clk       (SCLK, pin 7) connected to PA2
 // back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~80mA total
 
+
 // Maximum dimensions of the LCD, although the pixels are
 // numbered from zero to (MAX-1).  Address may automatically
 // be incremented after each transmission.
@@ -62,10 +63,12 @@
 #define SCREENW     84
 #define SCREENH     48
 
+
+
 // Contrast value 0xB1 looks good on red SparkFun
 // and 0xB8 looks good on blue Nokia 5110.
 // Adjust this from 0xA0 (lighter) to 0xCF (darker) for your display.
-#define CONTRAST                0xB9
+#define CONTRAST                0xC0
 
 // This table contains the hex values that represent pixels
 // for a font that is 5 pixels wide and 8 pixels high

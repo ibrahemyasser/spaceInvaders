@@ -80,11 +80,13 @@ uint32_t max_score=0;
 uint8_t nextBullet = 0;
 uint8_t bulletsCounter = 0;
 uint8_t mnk4 = FALSSE;
-uint8_t lifes=MAX_LIVES;
+uint8_t lifes=10;
 uint8_t enemyGenrateFlag = TRUUE;
 uint8_t generateCount = 0;
 uint8_t start = FALSSE;
 uint8_t bye		= FALSSE;
+
+uint8_t receivedChar = '\0';
 
 unsigned long FrameCount=0; 
 unsigned long TimerCount;
@@ -93,6 +95,7 @@ unsigned long SW1,SW2;  // input from PF4,PF0
 
 uint8_t moveLeft_Flag = FALSSE;
 uint8_t moveRight_Flag = FALSSE;
+uint8_t fireBullet_Flag	= FALSSE;
 sint16_t Explosion_xPos ;
 sint16_t Explosion_yPos ;
 
@@ -124,6 +127,9 @@ void game_Init(void)
 	Port_Init(&Move_Right_Button);
 	Port_Init(&Move_Left_Button);
 	Port_Init(&Fire_Button);
+	
+	Port_Init(&UART1_Rx);
+	Port_Init(&UART1_Tx);
 	for (i=0; i<MAX_LIVES; i++){
 	Port_Init(&led_indicators[i]);
 	}
@@ -135,6 +141,7 @@ void game_Init(void)
 	IntCrtl_Init(&Int_RightButton);
 	IntCrtl_Init(&Int_LeftButton);
 	IntCrtl_Init(&Int_FireButton);
+	IntCrtl_Init(&UART1_int);
 	for (i = 0;i<MAX_OF_BULLETS;i++)
 	{
 		playerBullet[i].pos.x = 0;
@@ -147,6 +154,7 @@ void game_Init(void)
 	{
 		enemies[i].alive = FALSSE;	
 	}
+	Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 	cpuDriver_EnableGlobalInterrupt();
 }
 
@@ -364,7 +372,7 @@ void draw_explosion()
 			Nokia5110_PrintBMP(Explosion_xPos, Explosion_yPos, smallexplosion0, 0);
 			Nokia5110_DisplayBuffer();
 		}
-			
+			break;
 	}
 	 
 }
@@ -406,13 +414,15 @@ void updatePlayerBullet(void) {
 	//Systick_StartTimer(BULLET_DELAY,updatePlayerBullet);
 }
 
-void check_Enemy_Collide(void)
+
+
+void check_Bullet_Collision(void)
 {
-	uint8_t cu;
-	uint8_t bu;
+	  uint8_t bu;
+	  uint8_t cu;
 	for(cu=0;cu<MAX_OF_BULLETS;cu++)
 	{
-		
+
 		for(bu = 0;bu<MAX_OF_ENEMIES;bu++)
 		{
 			if(playerBullet[cu].active&&enemies[bu].alive)
@@ -441,10 +451,11 @@ void check_Enemy_Collide(void)
 	}
 }
 
-void check_Player_Collide(void)
+
+void check_Player_Collision(void)
 {
 	uint8_t bu;
-	for(bu=0;bu<MAX_OF_ENEMIES;bu++)
+		for(bu=0;bu<MAX_OF_ENEMIES;bu++)
 	{
 			if(enemies[bu].alive)
 			{
@@ -455,13 +466,10 @@ void check_Player_Collide(void)
 							//enemies[bu].alive = FALSSE;
 							player.collide=TRUUE;
 							--lifes;
-						
-							CLEAR_BIT_PERIPH_BAND(led_indicators[lifes].GPIOx->GPIODATA,led_indicators[lifes].ChannelId);
 							//game_Init();
 							break;
 						}
 					}
-					
 				}
 	}
 	if(player.collide)
@@ -470,15 +478,11 @@ void check_Player_Collide(void)
 		player.collide=FALSSE;
 		if(player.pos.x ==SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 &&player.pos.y==SCREEN_HEIGHT - PLAYER_HEIGHT - 2)
 		 player.active=FALSSE;
-		 
 		 else 
 		 {
 			 player.pos.x =SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2 ;
-			 player.pos.y=SCREEN_HEIGHT - PLAYER_PADDING;
-		 }
-		 
-		
-		
+			 player.pos.y=SCREEN_HEIGHT - PLAYER_PADDING ;
+		 }	
 	for (i = 0;i<MAX_OF_BULLETS;i++)
 	{
 		playerBullet[i].pos.x = 0;
@@ -605,26 +609,45 @@ void main_menu_select(void){
 }
 
 void UART_Init(void){
-// as part of Lab 11, modify this program to use UART0 instead of UART1
+uint8_t ss;
+	// as part of Lab 11, modify this program to use UART1 instead of UART1
 //                 switching from PC5,PC4 to PA1,PA0
-  SYSCTRL->RCGC1 |= SYSCTL_RCGC1_UART0; // activate UART0
-
-  SYSCTRL->RCGC2 |= SYSCTL_RCGC2_GPIOA; // activate port A
-  UART0->CTL  &= ~UART_CTL_UARTEN;      // disable UART
-	UART0->IBRD = 43;											// IBRD = int(80,000,000 / (16 * 115200)) = int(43.402778)
-        
-  UART0->FBRD = 26;                    // FBRD = round(0.402778 * 64) = 26
-                                        // 8 bit word length (no parity bits, one stop bit, FIFOs)
-  UART0->LCRH = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
-  UART0->CTL |= UART_CTL_UARTEN;       // enable UART
-  GPIOA->GPIOAFSEL |= 0x03;           // enable alt funct on PA1,PA0
-  GPIOA->GPIODEN |= 0x03;             // enable digital I/O on PA1,PA0
-                                        // configure PA1,PA0 as UART0
-  GPIOA->GPIOPCTL= (GPIOA->GPIOPCTL&0xFFFFFF00)+0x00000011;
-  GPIOA->GPIOAMSEL &= ~0x03;          // disable analog functionality on PA1,PA0
+  SET_BIT_PERIPH_BAND(SYSCTRL->RCGCUART,SYSCTL_RCGC1_UART1);// activate UART1
+  SET_BIT_PERIPH_BAND(SYSCTRL->RCGCGPIO,SYSCTL_RCGC2_GPIOB);// activate port A
+	ss =0;
+	ss =0;
+  CLEAR_BIT_PERIPH_BAND(UART1->CTL,UART_CTL_UARTEN);// disable UART
+	//CLEAR_BIT_PERIPH_BAND(UART1->ICR,UART_ICR_RXIC); 
+	UART1->IBRD = 43;											// IBRD = int(80,000,000 / (16 * 115200)) = int(43.402778)
+  UART1->FBRD = 26;                    // FBRD = round(0.402778 * 64) = 26                                  // 8 bit word length (no parity bits, one stop bit, FIFOs)
+  UART1->LCRH = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
+	
+	
+	UART1->CC  &= ~UART_CC_CS_M;          // clear baud clock control field
+  UART1->CC  |= UART_CC_CS_SYSCLK;      // configure for system clock
+	
+  SET_BIT_PERIPH_BAND(UART1->CTL ,UART_CTL_RXE);
+	SET_BIT_PERIPH_BAND(UART1->CTL ,UART_CTL_TXE);
+	SET_BIT_PERIPH_BAND(UART1->CTL ,UART_CTL_UARTEN);// enable UART
+  SET_BIT_PERIPH_BAND(UART1->IM,UART_IM_RXIM);
+	SET_BIT_PERIPH_BAND(UART1->IM,UART_IM_TXIM);
+	//GPIOB->GPIOAFSEL |= 0x03;           // enable alt funct on PA1,PA0
+  //GPIOB->GPIODEN |= 0x03;             // enable digital I/O on PA1,PA0
+                                        // configure PA1,PA0 as UART1
+  //GPIOB->GPIOPCTL= (GPIOB->GPIOPCTL&0xFFFFFF00)+0x00000011;
+  //GPIOB->GPIOAMSEL &= ~0x03;          // disable analog functionality on PA1,PA0
+	//IntCtrl_EnableIRQ(UART1_IRQn);
+}
+unsigned char UART_InChar(void){
+// as part of Lab 11, modify this program to use UART1 instead of UART1
+  while((UART1->FR&UART_FR_RXFE) != 0);
+  return((unsigned char)(UART1->DR&0xFF));
 }
 
-
+void uartOutChar(char c) {
+    while(UART1->FR & UART_FR_TXFF); // Wait if the transmit FIFO is full
+    UART1->DR = c; // Send the character
+}
 
 /**************************
 * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)        

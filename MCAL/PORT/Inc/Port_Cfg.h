@@ -203,7 +203,8 @@ typedef enum
 typedef enum
 {
 	INPUT = 0,
-	OUTPUT
+	OUTPUT,
+	ALF
 	
 }Port_PinDirectionType;
 
@@ -211,14 +212,16 @@ typedef enum
 {
 	PULL_UP,
 	PULL_DOWN,
-	OPEN_DRAIN
+	OPEN_DRAIN,
+	NONE
 }Port_PinAttachType;
 
 typedef enum 
 {
 	R2R,
 	R4R,
-	R8R
+	R8R,
+	NONEE
 }Port_PinOutputCurrentType;
 
 typedef enum 

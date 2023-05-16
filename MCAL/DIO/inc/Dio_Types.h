@@ -98,7 +98,8 @@ typedef enum
 typedef enum
 {
 	LOW = 0,
-	HIGH
+	HIGH,
+	ALFF
 }DIO_LevelType;
 
 

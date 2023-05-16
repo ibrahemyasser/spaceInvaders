@@ -100,7 +100,7 @@ void IntCrtl_Init(IntCtr_Config* Int_Cfg)
 	
 	/*TODO : Enable\Disable based on user configurations in NVIC_ENx and SCB_Sys Registers */
 	IntCtrl_EnableIRQ(Int_Cfg->InterruptPeripheralGate);
-	cpuDriver_EnableGlobalInterrupt();
+	
 }
 
 

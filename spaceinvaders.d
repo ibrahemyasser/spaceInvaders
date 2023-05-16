@@ -1,6 +1,5 @@
 .\spaceinvaders.o: HAL\src\spaceInvaders.c
 .\spaceinvaders.o: .\APP\../Nokia5110.h
-.\spaceinvaders.o: .\APP\../TExaS.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Std_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Platform_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Compiler.h
@@ -16,3 +15,4 @@
 .\spaceinvaders.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
 .\spaceinvaders.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
 .\spaceinvaders.o: .\APP\../Random.h
+.\spaceinvaders.o: .\LIBRARIES\Common\Bit_Math.h

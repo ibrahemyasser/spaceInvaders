@@ -9,3 +9,4 @@
 .\spaceinvaders_lcfg.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
 .\spaceinvaders_lcfg.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
 .\spaceinvaders_lcfg.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
+.\spaceinvaders_lcfg.o: .\HAL\inc\spaceInvaders.h

@@ -330,7 +330,8 @@ typedef struct {                                    /*!< UART0 Structure        
 #define GPIOF_BASE							  	0x40025000UL
 #define GPIOF_BASE_AHB							0x4005D000UL
 #define UART0_BASE                      0x4000C000UL
-
+#define UART1_BASE                      0x4000D000UL
+#define UART5_BASE                      0x40011000UL
 
 #define NVIC_BASE										( CORTEXM4_PERI_BASE_ADDRESS + 0x0100UL )
 #define SCB_BASE										( CORTEXM4_PERI_BASE_ADDRESS + 0x0D00UL )
@@ -353,7 +354,8 @@ typedef struct {                                    /*!< UART0 Structure        
 #define GPIOF_AHB							((GPIO_Type				*)	GPIOF_BASE_AHB)
 
 #define UART0                 ((UART0_Type      *) 	UART0_BASE)
-
+#define UART1                 ((UART0_Type      *) 	UART1_BASE)
+#define UART5                           ((UART0_Type              *) UART5_BASE)
 #define WDT0 									((WDT_Type 				*)	WDT0_BASE)
 #define WDT1 									((WDT_Type 				*)	WDT1_BASE)
 

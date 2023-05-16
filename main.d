@@ -6,5 +6,12 @@
 .\main.o: .\LIBRARIES\Common\Std_Types.h
 .\main.o: .\APP\../LIBRARIES/common/Platform_Types.h
 .\main.o: .\APP\../LIBRARIES/common/Compiler.h
+.\main.o: .\APP\../MCAL/PORT/Inc/Port_Cfg.h
+.\main.o: .\APP\../MCAL/DIO/Inc/Dio.h
+.\main.o: .\APP\../MCAL/DIO/Inc/Dio_Types.h
+.\main.o: .\APP\../MCAL/INTERRUPT/inc/IntCtrl.h
+.\main.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Cfg.h
+.\main.o: .\APP\../MCAL/INTERRUPT/Inc/IntCtrl_Types.h
+.\main.o: .\APP\../LIBRARIES/common/Mcu_Hw.h
 .\main.o: APP\../MCAL/SYSTICK/Inc/Systick.h
 .\main.o: .\APP\../MCAL/SYSTICK/Inc/Systick_Types.h

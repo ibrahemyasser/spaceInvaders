@@ -73,6 +73,15 @@ Port_ConfigType Move_Right_Button =
 		R4R
 		
 	};
+	GPIO_EXTI_ConfigType Right_Button=
+	{
+		GPIOD,
+		PD0,
+		EDGE_SENSITIVE,
+		EDGE_CONTROLLED,
+		FALLING_LOW,
+		GPIO_PortD_IRQn
+	};
 	Port_ConfigType Fire_Button =
 	{
 		GPIOE,
@@ -84,6 +93,15 @@ Port_ConfigType Move_Right_Button =
 		PULL_UP,
 		R4R
 		
+	};
+	GPIO_EXTI_ConfigType Fire_EXTI_Button=
+	{
+		GPIOE,
+		PE0,
+		EDGE_SENSITIVE,
+		EDGE_CONTROLLED,
+		FALLING_LOW,
+		GPIO_PortE_IRQn
 	};
 	
 Port_ConfigType Move_Left_Button= 
@@ -98,18 +116,7 @@ Port_ConfigType Move_Left_Button=
 		R4R
 		
 	};
-	
-GPIO_EXTI_ConfigType Right_Button=
-	{
-		GPIOD,
-		PD0,
-		EDGE_SENSITIVE,
-		EDGE_CONTROLLED,
-		FALLING_LOW,
-		GPIO_PortD_IRQn
-	};
-	
-GPIO_EXTI_ConfigType Left_Button=
+	GPIO_EXTI_ConfigType Left_Button=
 	{
 		GPIOC,
 		PC4,
@@ -118,15 +125,36 @@ GPIO_EXTI_ConfigType Left_Button=
 		FALLING_LOW,
 		GPIO_PortC_IRQn
 	};
-GPIO_EXTI_ConfigType Fire_EXTI_Button=
+
+	
+	Port_ConfigType UART1_Rx =
 	{
-		GPIOE,
-		PE0,
-		EDGE_SENSITIVE,
-		EDGE_CONTROLLED,
-		FALLING_LOW,
-		GPIO_PortE_IRQn
+		GPIOB,
+		PORTB,
+		PB0,
+		PB0_U1Rx,
+		ALFF,
+		ALF,
+		NONE,
+		NONEE
+		
 	};
+	Port_ConfigType UART1_Tx=
+	{
+		GPIOB,
+		PORTB,
+		PB1,
+		PB1_U1Tx,
+		ALFF,
+		ALF,
+		NONE,
+		NONEE
+		
+	};
+	
+
+	
+
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/

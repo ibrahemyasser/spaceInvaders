@@ -28,11 +28,15 @@
  *********************************************************************************************************************/
 IntCtr_Config Int_RightButton = 
 {
-	GPIO_PortF_IRQn,0x04,1,0
+	GPIO_PortD_IRQn,0x04,1,0
+};
+IntCtr_Config UART1_int= 
+{
+	UART1_IRQn,0x04,1,0
 };
 IntCtr_Config Int_LeftButton = 
 {
-	GPIO_PortF_IRQn,0x04,2,0
+	GPIO_PortC_IRQn,0x04,2,0
 };
 
 IntCtr_Config Int_FireButton = 

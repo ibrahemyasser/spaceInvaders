@@ -54,9 +54,7 @@ void GPIOPortE_Handler(void)
 	if (Fire_Button.GPIOx->GPIORIS & (1<<Fire_Button.ChannelId))
 	{
 		SET_BIT_PERIPH_BAND(Fire_Button.GPIOx->GPIOICR,Fire_Button.ChannelId);
-	//	playerBullet.active = TRUUE;
-		fire_PlayerBullet();
-		
+		fireBullet_Flag = TRUUE;
 	}
 }
 void GPIOPortC_Handler(void)
@@ -70,7 +68,6 @@ void GPIOPortC_Handler(void)
 			return;
 		}
 		moveLeft_Flag = TRUUE;
-		//move_left();
 		
 		//playerBullet.active = TRUUE;
 	}
@@ -78,8 +75,6 @@ void GPIOPortC_Handler(void)
 
 void GPIOPortD_Handler(void)
 {
-	//Nokia5110_ClearBuffer();
-	//Nokia5110_DisplayBuffer();      // draw buffer
 	
 	if(Move_Right_Button.GPIOx->GPIORIS & (1<<Move_Right_Button.ChannelId))  
 	{//s1 pressed
@@ -90,9 +85,37 @@ void GPIOPortD_Handler(void)
 			return;
 		}
 		moveRight_Flag = TRUUE;
-		//move_right();
+
 	}
 }
+
+void UART1_Handler(void)
+{
+	
+if (UART1->MIS & UART_MIS_RXMIS) { // If a receive interrupt has occurred
+        receivedChar = (uint8_t)UART1->DR; // Read the received character
+				switch(receivedChar) {
+							case 'a':
+									// Handle the 'a' key press
+									moveLeft_Flag = TRUUE;
+									break;
+							case 'd':
+									moveRight_Flag = TRUUE;
+								break;
+							case ' ':
+									fireBullet_Flag = TRUUE;
+							default:
+								break;
+						}
+				SET_BIT_PERIPH_BAND(UART1->ICR,UART_ICR_RXIC); // Clear the interrupt flag
+    }
+	
+	if (UART1->MIS & UART_MIS_TXMIS) { // If a transmit interrupt has occurred
+        UART1->DR = receivedChar; // Send the character stored in the global variable c
+       SET_BIT_PERIPH_BAND(UART1->ICR,UART_ICR_TXIC); // Clear the interrupt flag
+    }
+
+   }
 
 /******************************************************************************
 * \Syntax          : Std_ReturnType FunctionName(AnyType parameterName)        

@@ -49,8 +49,8 @@
 #define PLAYER_BULLET_SPEED 2
 #define PLAYER_PADDING			4
 
-#define BULLET_DELAY				100
-#define MAX_OF_BULLETS			2
+#define BULLET_DELAY				50
+#define MAX_OF_BULLETS			3
 
 #define MAX_OF_ENEMIES			4
 #define ENEMY_SPEED					2
@@ -61,12 +61,31 @@
 
 #define ENEMY_WIDTH					0x10
 #define ENEMY_HEIGHT				0x0A
-#define SYSCTL_RCGC2_GPIOA      0x00000001  // port A Clock Gating Control
-#define UART_CTL_UARTEN         0x00000001  // UART Enable
+
+#define UART_CC_CS_M            0x0000000F  // UART Baud Clock Source
+#define UART_CC_CS_SYSCLK       0x00000000  // The system clock (default)
+
+#define SYSCTL_RCGC2_GPIOA      0x00000000  // port A Clock Gating Control
+#define SYSCTL_RCGC2_GPIOB      0x00000001  // port A Clock Gating Control
+#define SYSCTL_RCGC1_UART0      0x00000000  // UART0 Clock Gating Control
+#define SYSCTL_RCGC1_UART1      0x00000001  // UART0 Clock Gating Control
 #define UART_LCRH_WLEN_8        0x00000060  // 8 bits
 #define UART_LCRH_FEN           0x00000010  // UART Enable FIFOs
+#define UART_MIS_TXMIS					0x00000005	
+#define UART_MIS_RXMIS					0x00000004
+#define UART_ICR_TXIC						0x00000005
+#define UART_ICR_RXIC						0x00000004
 
-#define SYSCTL_RCGC1_UART0      0x00000001  // UART0 Clock Gating Control
+#define UART_CTL_UARTEN         0x00000000  // UART Enable
+#define UART_CTL_RXE 						0x00000009
+#define UART_CTL_TXE 						0x00000008
+
+#define UART_IM_RXIM 						0x00000004
+#define UART_IM_TXIM 						0x00000005
+
+#define UART_FR_TXFF						0x00000005
+#define UART_FR_RXFE						0x00000004
+
 typedef enum 
 {
 	FALSSE=0,
@@ -118,9 +137,16 @@ extern GPIO_EXTI_ConfigType Fire_EXTI_Button;
 extern IntCtr_Config Int_RightButton;
 extern IntCtr_Config Int_LeftButton;
 extern IntCtr_Config Int_FireButton;
+extern IntCtr_Config UART1_int;
+
+extern Port_ConfigType UART1_Rx ;
+extern Port_ConfigType UART1_Tx ;
+
 
 extern Player player;
 extern Bullet playerBullet[MAX_OF_BULLETS];
+
+extern uint8_t receivedChar;
 
 extern uint8_t nextBullet ;
 extern uint8_t bulletsCounter;
@@ -132,6 +158,8 @@ extern uint8_t moveRight_Flag ;
 
 extern uint8_t start ;
 extern uint8_t bye	;
+
+extern uint8_t fireBullet_Flag;
 
 extern const unsigned char PlayerShip0[] ;
 extern const unsigned char Bullet_Map[] ;
@@ -156,7 +184,9 @@ void Draw(void);
 void Move(void);
 void Init(void);
 void draw_explosion(void);
-void check_Player_Collide(void);
-void check_Enemy_Collide(void);
-
+void check_Player_Collision(void);
+void check_Bullet_Collision(void);
+void uartOutChar(char c);
+void UART_Init(void);
+unsigned char UART_InChar(void);
 #endif
