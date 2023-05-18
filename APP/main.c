@@ -5,14 +5,14 @@
 #include "../MCAL/SYSTICK/Inc/Systick.h"
 
 
-extern unsigned char UART0_InChar(void);
-extern unsigned char UART0_OutChar(uint8_t);
+//extern unsigned char UART0_InChar(void);
+//extern unsigned char UART0_OutChar(uint8_t);
+
 int main(void){
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	Systick_Init();
 	Nokia5110_Init();
-  Nokia5110_ClearBuffer();
-	Nokia5110_DisplayBuffer();
+	draw_icon();
 	game_Init();
 	//UART_Init();
 	main_menu_select();
