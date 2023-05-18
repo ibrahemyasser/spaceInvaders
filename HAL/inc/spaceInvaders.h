@@ -172,6 +172,7 @@ void game_Init(void);
 void game_InterruptInit(void);
 void clear_bullet(Bullet p);
 void draw_bullet(void);
+void draw_icon(void);
 void updatePlayerBullet(void);
 void fire_PlayerBullet(void);
 void generateEnemies(void);
