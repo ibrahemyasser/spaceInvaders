@@ -57,7 +57,7 @@
 #define ENEMY_FREQ					3
 
 #define SCORE								10
-#define MAX_LIVES           3
+#define MAX_LIVES           10
 
 #define ENEMY_WIDTH					0x10
 #define ENEMY_HEIGHT				0x0A
