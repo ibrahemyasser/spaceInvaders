@@ -684,17 +684,6 @@ void BYE(void){
 }
 
 
-
-void Delay100ms(unsigned long count){unsigned long volatile time;
-  while(count>0){
-    time = 727240;  // 0.1sec at 80 MHz
-    while(time){
-	  	time--;
-    }
-    count--;
-  }
-}
-
 void draw_icon(void){
 	Nokia5110_ClearBuffer();
 	Nokia5110_PrintBMP(0, 47, marquee, 0);
