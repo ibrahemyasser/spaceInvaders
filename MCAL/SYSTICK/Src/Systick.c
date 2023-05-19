@@ -31,6 +31,16 @@
  extern uint32_t 					ON_TIME;
  extern uint32_t 					OFF_TIME;
  extern void LedControl(void);
+ extern unsigned long Index;
+ extern const unsigned char *Wave;
+ extern void DAC_Out(unsigned long data);
+ extern const unsigned short wave[32];
+ extern const unsigned char shoot[4080];
+ extern void Sound_Shoot(void);
+ extern void Sound_Killed(void);
+ extern void Sound_Explosion(void);
+ extern void Sound_InvaderShoot(void);
+ extern const unsigned long shoot_sound[];
 /**********************************************************************************************************************
  *  LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
@@ -113,6 +123,9 @@ void Systick_ChangeTiming(uint32_t time,void(* Cbk_Ptr)(void))
 
 void SysTick_Handler(void)
 {
+//	Index = (Index+1) % 32; 
+//  	DAC_Out(shoot[Index]);
+//	Sound_Shoot();
 	Systick_StopTimer();
 	Ptr_to_Fn();
 		
