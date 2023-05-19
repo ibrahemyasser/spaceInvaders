@@ -254,6 +254,7 @@ void draw_player(void) {
 		GameOver(max_score);
 		Delay100ms(10);
 		lifes = MAX_LIVES;
+		start = FALSSE;
 		main_menu_select();
 	}
 	if(moveLeft_Flag == TRUUE)
