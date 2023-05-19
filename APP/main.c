@@ -14,6 +14,7 @@ int main(void){
 	Nokia5110_Init();
 	draw_icon();
 	game_Init();
+	Sound_Init();	
 	//UART_Init();
 	main_menu_select();
 	moveLeft_Flag = FALSSE;
@@ -41,6 +42,10 @@ int main(void){
     draw_bullet();
 		draw_enemies();
     Nokia5110_DisplayBuffer();
+	  
+	  //		Sound_Play();
+//		
+//		Sound_Tone(5);
     
     // Add other game logic here
   }
