@@ -537,7 +537,7 @@ void check_Player_Collision(void)
 	{
 			if(enemies[bu].alive)
 			{
-					if( player.pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT	))
+					if( player.pos.y<=(enemies[bu].pos.y+ENEMY_HEIGHT/2	))
 					{
 						if((player.pos.x>=enemies[bu].pos.x&&player.pos.x<=(enemies[bu].pos.x+ENEMY_WIDTH / 2))||((player.pos.x+PLAYER_WIDTH / 2)<=(enemies[bu].pos.x+ENEMY_WIDTH)&&(player.pos.x+PLAYER_WIDTH / 2)>=(enemies[bu].pos.x)))
 						{
