@@ -236,12 +236,25 @@ void game_Init(void)
 	cpuDriver_EnableGlobalInterrupt();
 }
 
+
+void Delay100ms(unsigned long count){unsigned long volatile time;
+  while(count>0){
+    time = 727240;  // 0.1sec at 80 MHz
+    while(time){
+	  	time--;
+    }
+    count--;
+  }
+}
+
 // Draw the player on the screen
 void draw_player(void) {
 
 	if(lifes==0){
 		GameOver(max_score);
-		exit(1);
+		Delay100ms(10);
+		lifes = MAX_LIVES;
+		main_menu_select();
 	}
 	if(moveLeft_Flag == TRUUE)
 	{
